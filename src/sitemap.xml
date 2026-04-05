@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Home / Daily Shloka -->
+  <url>
+    <loc>https://geetha.kprsnt.in/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://geetha.kprsnt.in/"/>
+    <xhtml:link rel="alternate" hreflang="te" href="https://geetha.kprsnt.in/"/>
+  </url>
+
+  <!-- Spiritual Blog -->
+  <url>
+    <loc>https://geetha.kprsnt.in/blog</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Verse Archive -->
+  <url>
+    <loc>https://geetha.kprsnt.in/archive</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Individual Chapters (for deep linking) -->
+  <url><loc>https://geetha.kprsnt.in/?ch=1&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=2&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=3&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=4&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=5&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=6&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=7&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=8&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=9&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=10&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=11&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=12&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=13&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=14&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=15&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=16&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=17&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://geetha.kprsnt.in/?ch=18&amp;v=1</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- API endpoints (for AI crawlers) -->
+  <url>
+    <loc>https://geetha.kprsnt.in/api/daily</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>

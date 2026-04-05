@@ -3,8 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Spiritual blog with AI-generated insights from the Bhagavad Gita. Life lessons in English and Telugu.">
-  <title>Spiritual Blog — Geetha</title>
+
+  <!-- Primary SEO -->
+  <title>Spiritual Blog — Bhagavad Gita Life Lessons | Geetha</title>
+  <meta name="description" content="AI-generated spiritual blog with life lessons from the Bhagavad Gita. Daily insights connecting ancient wisdom to modern life, in English and Telugu.">
+  <meta name="keywords" content="Bhagavad Gita blog, spiritual blog, life lessons, Telugu spiritual blog, Gita wisdom, Hindu philosophy blog, daily inspiration, AI spiritual insights">
+  <link rel="canonical" href="https://geetha.kprsnt.in/blog">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="blog">
+  <meta property="og:url" content="https://geetha.kprsnt.in/blog">
+  <meta property="og:title" content="Spiritual Blog — Life Lessons from the Bhagavad Gita">
+  <meta property="og:description" content="AI-powered spiritual insights connecting the Bhagavad Gita's ancient wisdom to everyday modern life. Read in English and Telugu.">
+  <meta property="og:image" content="https://geetha.kprsnt.in/og-image.png">
+  <meta property="og:site_name" content="Geetha">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Spiritual Blog — Geetha">
+  <meta name="twitter:description" content="AI-powered life lessons from the Bhagavad Gita in English and Telugu.">
+
+  <!-- AI / Crawl -->
+  <meta name="robots" content="index, follow, max-snippet:-1">
+
+  <!-- Structured Data: Blog -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Geetha Spiritual Blog",
+    "description": "AI-generated spiritual blog posts with life lessons and morals from the Bhagavad Gita, in English and Telugu.",
+    "url": "https://geetha.kprsnt.in/blog",
+    "inLanguage": ["en", "te"],
+    "about": {
+      "@type": "Thing",
+      "name": "Bhagavad Gita",
+      "description": "Hindu scripture containing 700 verses of spiritual wisdom"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Geetha",
+      "url": "https://geetha.kprsnt.in"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://geetha.kprsnt.in/" },
+      { "@type": "ListItem", "position": 2, "name": "Spiritual Blog", "item": "https://geetha.kprsnt.in/blog" }
+    ]
+  }
+  </script>
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -13,9 +67,9 @@
   <div class="stars" id="stars"></div>
 
   <!-- Navigation -->
-  <nav class="nav" id="main-nav">
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">
+      <a href="/" class="nav-logo" aria-label="Geetha Home">
         <span class="om">🕉️</span>
         <span data-en="Geetha" data-te="గీత">Geetha</span>
       </a>
@@ -25,9 +79,9 @@
         <li><a href="/blog" class="active" data-en="Spiritual Blog" data-te="ఆధ్యాత్మిక బ్లాగ్">Spiritual Blog</a></li>
         <li><a href="/archive" data-en="Archive" data-te="పూర్వ శ్లోకాలు">Archive</a></li>
         <li>
-          <div class="lang-toggle" id="lang-toggle">
-            <button class="lang-btn active" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="te">తె</button>
+          <div class="lang-toggle" id="lang-toggle" role="group" aria-label="Language selector">
+            <button class="lang-btn active" data-lang="en" aria-label="English">EN</button>
+            <button class="lang-btn" data-lang="te" aria-label="Telugu">తె</button>
           </div>
         </li>
       </ul>
@@ -42,13 +96,13 @@
         <p class="page-subtitle" data-en="Life lessons from the Bhagavad Gita, written for the modern soul" data-te="భగవద్గీత నుండి ఆధునిక ఆత్మ కోసం రాసిన జీవిత పాఠాలు">Life lessons from the Bhagavad Gita, written for the modern soul</p>
       </header>
 
-      <div class="blog-filters">
-        <button class="filter-btn active" data-filter="all" data-en="All Posts" data-te="అన్ని">All Posts</button>
-        <button class="filter-btn" data-filter="ai" data-en="AI Insights" data-te="AI అంతర్దృష్టులు">AI Insights</button>
-        <button class="filter-btn" data-filter="personal" data-en="Life Notes" data-te="జీవిత గమనికలు">Life Notes</button>
+      <div class="blog-filters" role="tablist" aria-label="Blog filters">
+        <button class="filter-btn active" data-filter="all" data-en="All Posts" data-te="అన్ని" role="tab" aria-selected="true">All Posts</button>
+        <button class="filter-btn" data-filter="ai" data-en="AI Insights" data-te="AI అంతర్దృష్టులు" role="tab" aria-selected="false">AI Insights</button>
+        <button class="filter-btn" data-filter="personal" data-en="Life Notes" data-te="జీవిత గమనికలు" role="tab" aria-selected="false">Life Notes</button>
       </div>
 
-      <div class="blog-grid stagger" id="blog-grid">
+      <div class="blog-grid stagger" id="blog-grid" role="feed" aria-label="Blog posts">
         <div class="loading" id="blog-loading">
           <div class="loading-spinner"></div>
           <span class="loading-text" data-en="Loading blog posts..." data-te="బ్లాగ్ పోస్టులు లోడ్ అవుతున్నాయి...">Loading blog posts...</span>
@@ -62,12 +116,16 @@
     </div>
 
     <!-- Blog Detail View -->
-    <div id="blog-detail-view" class="blog-detail" style="display: none;">
+    <article id="blog-detail-view" class="blog-detail" style="display: none;" itemscope itemtype="https://schema.org/BlogPosting">
+      <meta itemprop="publisher" content="Geetha">
       <a href="#" class="back-link" id="blog-back">← <span data-en="Back to Blog" data-te="బ్లాగ్‌కు తిరిగి">Back to Blog</span></a>
-      <h1 class="blog-detail-title lang-content" id="blog-detail-title"></h1>
-      <div class="blog-detail-meta" id="blog-detail-meta"></div>
-      <div class="blog-detail-content lang-content" id="blog-detail-content"></div>
-    </div>
+      <h1 class="blog-detail-title lang-content" id="blog-detail-title" itemprop="headline"></h1>
+      <div class="blog-detail-meta" id="blog-detail-meta">
+        <meta itemprop="datePublished" content="">
+        <meta itemprop="inLanguage" content="en">
+      </div>
+      <div class="blog-detail-content lang-content" id="blog-detail-content" itemprop="articleBody"></div>
+    </article>
   </main>
 
   <footer class="footer">

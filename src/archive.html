@@ -3,8 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Browse all 700 verses of the Bhagavad Gita. Track your daily reading progress.">
-  <title>Archive — Geetha</title>
+
+  <!-- Primary SEO -->
+  <title>All 700 Bhagavad Gita Verses — Chapter Archive | Geetha</title>
+  <meta name="description" content="Browse all 700 verses across 18 chapters of the Bhagavad Gita with Sanskrit text, English and Telugu translations. Complete Gita verse archive.">
+  <meta name="keywords" content="Bhagavad Gita chapters, all 700 verses, Gita archive, Sanskrit shlokas, Telugu Bhagavad Gita, chapter wise Gita">
+  <link rel="canonical" href="https://geetha.kprsnt.in/archive">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://geetha.kprsnt.in/archive">
+  <meta property="og:title" content="Bhagavad Gita — All 700 Verses Archive">
+  <meta property="og:description" content="Complete archive of all 18 chapters and 700 verses of the Bhagavad Gita with Sanskrit, English and Telugu translations.">
+  <meta property="og:site_name" content="Geetha">
+
+  <!-- AI / Crawl -->
+  <meta name="robots" content="index, follow, max-snippet:-1">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Bhagavad Gita Verse Archive",
+    "description": "Browse all 18 chapters and 700 verses of the Bhagavad Gita",
+    "url": "https://geetha.kprsnt.in/archive",
+    "isPartOf": { "@type": "WebSite", "name": "Geetha", "url": "https://geetha.kprsnt.in" },
+    "about": {
+      "@type": "Book",
+      "name": "Bhagavad Gita",
+      "numberOfPages": 700
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://geetha.kprsnt.in/" },
+      { "@type": "ListItem", "position": 2, "name": "Verse Archive", "item": "https://geetha.kprsnt.in/archive" }
+    ]
+  }
+  </script>
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -12,9 +55,9 @@
   <div class="cosmic-bg"></div>
   <div class="stars" id="stars"></div>
 
-  <nav class="nav" id="main-nav">
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">
+      <a href="/" class="nav-logo" aria-label="Geetha Home">
         <span class="om">🕉️</span>
         <span data-en="Geetha" data-te="గీత">Geetha</span>
       </a>
@@ -24,9 +67,9 @@
         <li><a href="/blog" data-en="Spiritual Blog" data-te="ఆధ్యాత్మిక బ్లాగ్">Spiritual Blog</a></li>
         <li><a href="/archive" class="active" data-en="Archive" data-te="పూర్వ శ్లోకాలు">Archive</a></li>
         <li>
-          <div class="lang-toggle" id="lang-toggle">
-            <button class="lang-btn active" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="te">తె</button>
+          <div class="lang-toggle" id="lang-toggle" role="group" aria-label="Language selector">
+            <button class="lang-btn active" data-lang="en" aria-label="English">EN</button>
+            <button class="lang-btn" data-lang="te" aria-label="Telugu">తె</button>
           </div>
         </li>
       </ul>
@@ -39,7 +82,7 @@
       <p class="page-subtitle" data-en="Browse all 18 chapters · 700 verses of the Bhagavad Gita" data-te="భగవద్గీతలోని 18 అధ్యాయాలు · 700 శ్లోకాలను చూడండి">Browse all 18 chapters · 700 verses of the Bhagavad Gita</p>
     </header>
 
-    <div class="archive-grid" id="archive-grid">
+    <div class="archive-grid" id="archive-grid" role="list" aria-label="Chapter list">
       <div class="loading" id="archive-loading">
         <div class="loading-spinner"></div>
         <span class="loading-text">Loading archive...</span>

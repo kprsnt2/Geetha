@@ -80,7 +80,14 @@ export function initMobileNav() {
 // ═══════════════════════════════════════════
 export async function apiFetch(path) {
   const res = await fetch(`/api/${path}`);
-  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  if (!res.ok) {
+    try {
+      const errData = await res.json();
+      throw new Error(JSON.stringify(errData, null, 2));
+    } catch(e) {
+      throw new Error(`API error: ${res.status}`);
+    }
+  }
   return res.json();
 }
 

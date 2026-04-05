@@ -16,5 +16,10 @@
         { "key": "Content-Type", "value": "application/json" }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "data/**"
+    }
+  }
 }

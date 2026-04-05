@@ -40,11 +40,27 @@ let dbInstance = null;
 
 async function getDb() {
   if (dbInstance) return dbInstance;
-  const SQL = await initSqlJs();
-  const dbPath = path.join(process.cwd(), 'data', 'geetha.db');
-  if (!fs.existsSync(dbPath)) {
+
+  // Locate the WASM binary for sql.js
+  const wasmPath = path.join(__dirname, '..', 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm');
+  const wasmBinary = fs.readFileSync(wasmPath);
+  const SQL = await initSqlJs({ wasmBinary });
+
+  // Try slim DB first (production), fallback to full DB
+  const slimDbPath = path.join(__dirname, '..', 'data', 'geetha-slim.db');
+  const fullDbPath = path.join(__dirname, '..', 'data', 'geetha.db');
+  
+  let dbPath = null;
+  if (fs.existsSync(slimDbPath)) {
+    dbPath = slimDbPath;
+  } else if (fs.existsSync(fullDbPath)) {
+    dbPath = fullDbPath;
+  }
+
+  if (!dbPath) {
     return null;
   }
+
   const buffer = fs.readFileSync(dbPath);
   dbInstance = new SQL.Database(buffer);
   return dbInstance;
@@ -91,6 +107,9 @@ module.exports = async function handler(req, res) {
     });
   } catch (err) {
     console.error('API Error:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ 
+      error: 'Internal server error', 
+      details: err.message
+    });
   }
 };

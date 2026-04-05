@@ -38,6 +38,7 @@ async function loadDailyShloka() {
       <div class="empty-state">
         <div class="icon">📿</div>
         <p>Unable to load today's shloka. The database may not be ready yet.</p>
+        <pre style="text-align:left; background:#111; color:#f88; padding:1rem; font-size:0.75rem; margin-top:1rem; overflow-x:auto;">${err.message}</pre>
         <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">Run <code>node scripts/fetch-all-shlokas.js</code> to populate the database.</p>
       </div>
     `;

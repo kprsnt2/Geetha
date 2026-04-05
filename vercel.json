@@ -19,7 +19,7 @@
   ],
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "data/**"
+      "includeFiles": "{data/geetha-slim.db,data/geetha.db,node_modules/sql.js/dist/sql-wasm.wasm}"
     }
   }
 }

@@ -9,7 +9,8 @@
     "fetch-shlokas": "node scripts/fetch-all-shlokas.js",
     "init-db": "node -e \"require('./scripts/db.js').initializeDatabase()\"",
     "generate": "node scripts/daily-generate.js",
-    "checkpoint-db": "node scripts/checkpoint-db.js"
+    "checkpoint-db": "node scripts/checkpoint-db.js",
+    "slim-db": "node scripts/slim-db.js"
   },
   "keywords": [
     "bhagavad-gita",

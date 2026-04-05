@@ -1,13 +1,13 @@
 /**
  * Gemini AI Service for blog generation & Telugu translation
- * Model: gemini-pro-latest
+ * Model: gemini-flash-latest
  */
 
 require('dotenv').config();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-pro-latest' });
+const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
 
 /**
  * Generate a spiritual blog post for a shloka
@@ -24,6 +24,9 @@ ${shlokaData.transliteration}
 **English Translation:**
 ${shlokaData.english_translation}
 
+**Telugu Translation:**
+${shlokaData.telugu_translation || 'Not available'}
+
 **Commentary:**
 ${shlokaData.english_commentary || 'Not available'}
 
@@ -32,23 +35,23 @@ ${shlokaData.english_commentary || 'Not available'}
 Write the response in the following JSON format (return ONLY valid JSON, no markdown):
 {
   "title_en": "An engaging blog post title in English",
-  "content_en": "A detailed blog post (500-800 words) that:\n1. Opens with a relatable modern-day scenario or question\n2. Explains the shloka's meaning in simple terms\n3. Draws a practical life lesson\n4. Gives a real-world example of applying this wisdom\n5. Ends with a reflective thought or action step\nUse paragraph breaks with \\n\\n between sections.",
+  "content_en": "A detailed blog post (500-800 words) that:\\n1. Opens with a relatable modern-day scenario or question\\n2. Explains the shloka's meaning in simple terms\\n3. Draws a practical life lesson with a clear MORAL at the end\\n4. Gives a real-world example of applying this wisdom\\n5. Ends with 'Moral: <one-line takeaway>' followed by a reflective thought\\nUse paragraph breaks with \\\\n\\\\n between sections.",
   "excerpt_en": "A 2-3 sentence summary for the blog card",
-  "title_te": "Same title translated to Telugu",
-  "content_te": "Full blog post translated to Telugu (natural Telugu, not transliteration)",
+  "title_te": "Same title translated to natural Telugu",
+  "content_te": "Full blog post translated to natural Telugu (Telugu script, not transliteration). Include the moral in Telugu as well. This must be high-quality natural Telugu that a native speaker would enjoy reading.",
   "excerpt_te": "Telugu summary for the blog card",
   "tags": ["tag1", "tag2", "tag3"]
 }`;
 
   const result = await model.generateContent(prompt);
   const text = result.response.text();
-  
+
   // Extract JSON from the response (handle potential markdown wrapping)
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
     throw new Error('Failed to extract JSON from Gemini response');
   }
-  
+
   return JSON.parse(jsonMatch[0]);
 }
 
@@ -66,7 +69,7 @@ async function processDraft(draftContent, relatedShloka = null) {
 1. **STRIP all personal information** — remove names, specific places, relationships (replace with generic terms like "a friend", "a colleague", "a city"), dates, and any identifying details
 2. Convert the personal experience into a **universal spiritual lesson** that anyone can relate to
 3. Connect it to Bhagavad Gita wisdom if possible
-4. Create a polished, publishable blog post
+4. Create a polished, publishable blog post with a clear moral at the end
 ${shlokaContext}
 
 **Original Draft:**
@@ -75,10 +78,10 @@ ${draftContent}
 Return ONLY valid JSON in this format:
 {
   "title_en": "Blog post title",
-  "content_en": "Polished blog post in English (400-600 words). Use \\n\\n for paragraph breaks.",
+  "content_en": "Polished blog post in English (400-600 words). End with 'Moral: <one-line takeaway>'. Use \\\\n\\\\n for paragraph breaks.",
   "excerpt_en": "2-3 sentence summary",
   "title_te": "Telugu title",
-  "content_te": "Full post in natural Telugu",
+  "content_te": "Full post in natural Telugu. Include the moral in Telugu.",
   "excerpt_te": "Telugu summary",
   "tags": ["tag1", "tag2", "tag3"],
   "related_shloka_id": "${relatedShloka ? `BG${relatedShloka.chapter}.${relatedShloka.verse}` : ''}"
@@ -86,12 +89,12 @@ Return ONLY valid JSON in this format:
 
   const result = await model.generateContent(prompt);
   const text = result.response.text();
-  
+
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
     throw new Error('Failed to extract JSON from Gemini response');
   }
-  
+
   return JSON.parse(jsonMatch[0]);
 }
 

@@ -4,6 +4,11 @@ on:
   schedule:
     # Run at midnight IST (18:30 UTC previous day)
     - cron: '30 18 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'blog_drafts/*.md'
+      - 'blog_drafts/*.txt'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -31,9 +36,12 @@ jobs:
       - name: Checkpoint database
         run: node scripts/checkpoint-db.js
 
+      - name: Rebuild slim database for Vercel
+        run: node scripts/slim-db.js
+
       - name: Commit and push changes
         run: |
           git config user.name "Gita Bot 🙏"
           git config user.email "bot@geetha.app"
-          git add data/geetha.db blog_drafts/published/
+          git add data/geetha.db data/geetha-slim.db blog_drafts/published/
           git diff --staged --quiet || (git commit -m "🕉️ Daily shloka blog - $(date -u '+%Y-%m-%d')" && git push)

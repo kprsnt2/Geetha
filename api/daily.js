@@ -66,12 +66,36 @@ async function getDb() {
   return dbInstance;
 }
 
+let segments = null;
+
+function loadSegments(db) {
+  if (segments) return segments;
+  // Try loading from bundled segments.json
+  const segPath = path.join(__dirname, '..', 'data', 'segments.json');
+  if (fs.existsSync(segPath)) {
+    segments = JSON.parse(fs.readFileSync(segPath, 'utf-8'));
+  }
+  return segments;
+}
+
+function findSegment(chapter, verse) {
+  if (!segments) return null;
+  for (const seg of segments) {
+    if (seg.chapter === chapter && verse >= seg.start_verse && verse <= seg.end_verse) {
+      return seg;
+    }
+  }
+  return null;
+}
+
 module.exports = async function handler(req, res) {
   try {
     const db = await getDb();
     if (!db) {
       return res.status(503).json({ error: 'Database not available' });
     }
+
+    loadSegments();
 
     const dayNumber = getDayNumber();
     const { chapter, verse } = dayToCV(dayNumber);
@@ -87,15 +111,36 @@ module.exports = async function handler(req, res) {
       cols.forEach((c, i) => shloka[c] = vals[i]);
     }
 
-    // Get today's blog
-    const blogResult = db.exec(`SELECT * FROM blogs WHERE shloka_id = '${shlokaId}' ORDER BY created_at DESC LIMIT 1`);
+    // Get blog — search across the whole segment
     let blog = null;
-    if (blogResult.length > 0) {
-      const cols = blogResult[0].columns;
-      const vals = blogResult[0].values[0];
-      blog = {};
-      cols.forEach((c, i) => blog[c] = vals[i]);
-      if (blog.tags) blog.tags = JSON.parse(blog.tags);
+    const segment = findSegment(chapter, verse);
+
+    if (segment) {
+      // Build list of all shloka IDs in this segment
+      const segIds = [];
+      for (let v = segment.start_verse; v <= segment.end_verse; v++) {
+        segIds.push(`'BG${segment.chapter}.${v}'`);
+      }
+      const blogResult = db.exec(
+        `SELECT * FROM blogs WHERE shloka_id IN (${segIds.join(',')}) ORDER BY created_at DESC LIMIT 1`
+      );
+      if (blogResult.length > 0) {
+        const cols = blogResult[0].columns;
+        const vals = blogResult[0].values[0];
+        blog = {};
+        cols.forEach((c, i) => blog[c] = vals[i]);
+        if (blog.tags) blog.tags = JSON.parse(blog.tags);
+      }
+    } else {
+      // Fallback: exact match
+      const blogResult = db.exec(`SELECT * FROM blogs WHERE shloka_id = '${shlokaId}' ORDER BY created_at DESC LIMIT 1`);
+      if (blogResult.length > 0) {
+        const cols = blogResult[0].columns;
+        const vals = blogResult[0].values[0];
+        blog = {};
+        cols.forEach((c, i) => blog[c] = vals[i]);
+        if (blog.tags) blog.tags = JSON.parse(blog.tags);
+      }
     }
 
     res.status(200).json({
@@ -104,6 +149,12 @@ module.exports = async function handler(req, res) {
       startDate: START_DATE,
       shloka,
       blog,
+      segment: segment ? {
+        start: segment.start_id,
+        end: segment.end_id,
+        topic_en: segment.topic_en,
+        topic_te: segment.topic_te
+      } : null,
     });
   } catch (err) {
     console.error('API Error:', err);
@@ -113,3 +164,4 @@ module.exports = async function handler(req, res) {
     });
   }
 };
+

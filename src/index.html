@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Daily Bhagavad Gita shloka with AI-powered spiritual insights in English and Telugu. Journey through all 700 verses.">
+  <title>గీత | Geetha — Daily Bhagavad Gita Wisdom</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-lang="en">
+  <!-- Cosmic Background -->
+  <div class="cosmic-bg"></div>
+  <div class="stars" id="stars"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="om">🕉️</span>
+        <span data-en="Geetha" data-te="గీత">Geetha</span>
+      </a>
+      
+      <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle menu">☰</button>
+      
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/" class="active" data-en="Daily Shloka" data-te="నేటి శ్లోకము">Daily Shloka</a></li>
+        <li><a href="/blog" data-en="Spiritual Blog" data-te="ఆధ్యాత్మిక బ్లాగ్">Spiritual Blog</a></li>
+        <li><a href="/archive" data-en="Archive" data-te="పూర్వ శ్లోకాలు">Archive</a></li>
+        <li>
+          <div class="lang-toggle" id="lang-toggle">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="te">తె</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero / Daily Shloka -->
+  <main>
+    <section class="hero" id="hero">
+      <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <span class="loading-text" data-en="Loading today's wisdom..." data-te="నేటి జ్ఞానం లోడ్ అవుతోంది...">Loading today's wisdom...</span>
+      </div>
+
+      <div id="shloka-content" style="display:none;" class="stagger">
+        <!-- Day Badge -->
+        <div class="day-badge">
+          <span>🕉️</span>
+          <span data-en="Day" data-te="రోజు">Day</span>
+          <span class="day-num" id="day-number">—</span>
+          <span data-en="of 700" data-te=" / 700">of 700</span>
+        </div>
+
+        <!-- Chapter Info -->
+        <div class="chapter-info" id="chapter-info">
+          Chapter 1 — Arjuna Visada Yoga
+        </div>
+
+        <!-- Shloka Card -->
+        <div class="shloka-card">
+          <div class="sanskrit-text" id="sanskrit-text">
+            Loading...
+          </div>
+          <div class="transliteration" id="transliteration">
+            Loading...
+          </div>
+          <div>
+            <div class="translation-label" id="translation-label" data-en="English Translation" data-te="తెలుగు అనువాదం">English Translation</div>
+            <div class="translation lang-content" id="translation">
+              Loading...
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="progress-label">
+            <span data-en="Chapter 1, Verse 1" data-te="అధ్యాయం 1, శ్లోకం 1" id="progress-start">Chapter 1, Verse 1</span>
+            <span id="progress-percent">0%</span>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="shloka-nav">
+          <button class="shloka-nav-btn prev" id="btn-prev">
+            ← <span data-en="Previous" data-te="మునుపటి">Previous</span>
+          </button>
+          <button class="shloka-nav-btn next" id="btn-next">
+            <span data-en="Next" data-te="తదుపరి">Next</span> →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Life Lesson / Blog Preview -->
+    <section class="lesson-section" id="lesson-section" style="display:none;">
+      <h2 class="section-title">
+        <span class="icon">✨</span>
+        <span data-en="Today's Life Lesson" data-te="నేటి జీవిత పాఠం">Today's Life Lesson</span>
+      </h2>
+      <div class="lesson-card lang-content" id="lesson-content">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span class="om-footer">🙏</span>
+    <p data-en="A journey through 700 verses of the Bhagavad Gita" data-te="భగవద్గీతలోని 700 శ్లోకాల ప్రయాణం">A journey through 700 verses of the Bhagavad Gita</p>
+    <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+      <span data-en="Data from" data-te="డేటా">Data from</span> 
+      <a href="https://vedicscriptures.github.io/" target="_blank">Vedic Scriptures API</a>
+      · <span data-en="AI by" data-te="AI ద్వారా">AI by</span> Gemini
+    </p>
+  </footer>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

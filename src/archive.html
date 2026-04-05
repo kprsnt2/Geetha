@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse all 700 verses of the Bhagavad Gita. Track your daily reading progress.">
+  <title>Archive — Geetha</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-lang="en">
+  <div class="cosmic-bg"></div>
+  <div class="stars" id="stars"></div>
+
+  <nav class="nav" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="om">🕉️</span>
+        <span data-en="Geetha" data-te="గీత">Geetha</span>
+      </a>
+      <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle menu">☰</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/" data-en="Daily Shloka" data-te="నేటి శ్లోకము">Daily Shloka</a></li>
+        <li><a href="/blog" data-en="Spiritual Blog" data-te="ఆధ్యాత్మిక బ్లాగ్">Spiritual Blog</a></li>
+        <li><a href="/archive" class="active" data-en="Archive" data-te="పూర్వ శ్లోకాలు">Archive</a></li>
+        <li>
+          <div class="lang-toggle" id="lang-toggle">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="te">తె</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <h1 class="page-title" data-en="Verse Archive" data-te="శ్లోకాల భాండాగారం">Verse Archive</h1>
+      <p class="page-subtitle" data-en="Browse all 18 chapters · 700 verses of the Bhagavad Gita" data-te="భగవద్గీతలోని 18 అధ్యాయాలు · 700 శ్లోకాలను చూడండి">Browse all 18 chapters · 700 verses of the Bhagavad Gita</p>
+    </header>
+
+    <div class="archive-grid" id="archive-grid">
+      <div class="loading" id="archive-loading">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">Loading archive...</span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span class="om-footer">🙏</span>
+    <p data-en="A journey through 700 verses of the Bhagavad Gita" data-te="భగవద్గీతలోని 700 శ్లోకాల ప్రయాణం">A journey through 700 verses of the Bhagavad Gita</p>
+  </footer>
+
+  <script type="module" src="/js/archive.js"></script>
+</body>
+</html>

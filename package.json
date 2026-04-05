@@ -1,0 +1,33 @@
+{
+  "name": "geetha",
+  "version": "1.0.0",
+  "description": "Bhagavad Gita daily shloka with AI spiritual blog — bilingual English/Telugu",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"vite --config vite.config.js\" \"node server/dev-api.js\"",
+    "build": "vite build --config vite.config.js",
+    "fetch-shlokas": "node scripts/fetch-all-shlokas.js",
+    "init-db": "node -e \"require('./scripts/db.js').initializeDatabase()\"",
+    "generate": "node scripts/daily-generate.js",
+    "checkpoint-db": "node scripts/checkpoint-db.js"
+  },
+  "keywords": [
+    "bhagavad-gita",
+    "spiritual",
+    "telugu",
+    "sanskrit"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "better-sqlite3": "^12.8.0",
+    "concurrently": "^9.2.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.0",
+    "express": "^5.2.1",
+    "sql.js": "^1.14.1",
+    "vite": "^8.0.3"
+  }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Spiritual blog with AI-generated insights from the Bhagavad Gita. Life lessons in English and Telugu.">
+  <title>Spiritual Blog — Geetha</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕉️</text></svg>">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-lang="en">
+  <div class="cosmic-bg"></div>
+  <div class="stars" id="stars"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="main-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="om">🕉️</span>
+        <span data-en="Geetha" data-te="గీత">Geetha</span>
+      </a>
+      <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle menu">☰</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/" data-en="Daily Shloka" data-te="నేటి శ్లోకము">Daily Shloka</a></li>
+        <li><a href="/blog" class="active" data-en="Spiritual Blog" data-te="ఆధ్యాత్మిక బ్లాగ్">Spiritual Blog</a></li>
+        <li><a href="/archive" data-en="Archive" data-te="పూర్వ శ్లోకాలు">Archive</a></li>
+        <li>
+          <div class="lang-toggle" id="lang-toggle">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="te">తె</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Blog List View -->
+    <div id="blog-list-view">
+      <header class="page-header">
+        <h1 class="page-title" data-en="Spiritual Blog" data-te="ఆధ్యాత్మిక బ్లాగ్">Spiritual Blog</h1>
+        <p class="page-subtitle" data-en="Life lessons from the Bhagavad Gita, written for the modern soul" data-te="భగవద్గీత నుండి ఆధునిక ఆత్మ కోసం రాసిన జీవిత పాఠాలు">Life lessons from the Bhagavad Gita, written for the modern soul</p>
+      </header>
+
+      <div class="blog-filters">
+        <button class="filter-btn active" data-filter="all" data-en="All Posts" data-te="అన్ని">All Posts</button>
+        <button class="filter-btn" data-filter="ai" data-en="AI Insights" data-te="AI అంతర్దృష్టులు">AI Insights</button>
+        <button class="filter-btn" data-filter="personal" data-en="Life Notes" data-te="జీవిత గమనికలు">Life Notes</button>
+      </div>
+
+      <div class="blog-grid stagger" id="blog-grid">
+        <div class="loading" id="blog-loading">
+          <div class="loading-spinner"></div>
+          <span class="loading-text" data-en="Loading blog posts..." data-te="బ్లాగ్ పోస్టులు లోడ్ అవుతున్నాయి...">Loading blog posts...</span>
+        </div>
+      </div>
+
+      <div class="empty-state" id="blog-empty" style="display: none;">
+        <div class="icon">📝</div>
+        <p data-en="No blog posts yet. The first post will be generated tomorrow!" data-te="ఇంకా బ్లాగ్ పోస్టులు లేవు. మొదటి పోస్ట్ రేపు జనరేట్ అవుతుంది!">No blog posts yet. The first post will be generated tomorrow!</p>
+      </div>
+    </div>
+
+    <!-- Blog Detail View -->
+    <div id="blog-detail-view" class="blog-detail" style="display: none;">
+      <a href="#" class="back-link" id="blog-back">← <span data-en="Back to Blog" data-te="బ్లాగ్‌కు తిరిగి">Back to Blog</span></a>
+      <h1 class="blog-detail-title lang-content" id="blog-detail-title"></h1>
+      <div class="blog-detail-meta" id="blog-detail-meta"></div>
+      <div class="blog-detail-content lang-content" id="blog-detail-content"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span class="om-footer">🙏</span>
+    <p data-en="A journey through 700 verses of the Bhagavad Gita" data-te="భగవద్గీతలోని 700 శ్లోకాల ప్రయాణం">A journey through 700 verses of the Bhagavad Gita</p>
+  </footer>
+
+  <script type="module" src="/js/blog.js"></script>
+</body>
+</html>

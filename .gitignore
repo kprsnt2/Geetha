@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.db-journal
+*.db-wal
+*.db-shm
+blog_drafts/published/

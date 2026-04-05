@@ -106,8 +106,10 @@ function updateTranslation(shloka, lang) {
   
   if (lang === 'te' && shloka.telugu_translation) {
     el.textContent = shloka.telugu_translation;
+    label.textContent = 'తెలుగు అనువాదం';
   } else {
     el.textContent = shloka.english_translation || 'Translation not available.';
+    label.textContent = lang === 'te' ? 'ఆంగ్ల అనువాదం' : 'English Translation';
   }
 }
 

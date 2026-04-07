@@ -11,6 +11,7 @@ export default defineConfig({
         main: resolve(__dirname, 'src/index.html'),
         blog: resolve(__dirname, 'src/blog.html'),
         archive: resolve(__dirname, 'src/archive.html'),
+        chat: resolve(__dirname, 'src/chat.html'),
       },
     },
   },

@@ -1,6 +1,38 @@
 import { initLanguage, initStars, initMobileNav, getLang } from './utils.js';
 
-let conversationHistory = [];
+let conversationHistory = JSON.parse(sessionStorage.getItem('geetha-chat-history')) || [];
+
+function saveHistory() {
+  sessionStorage.setItem('geetha-chat-history', JSON.stringify(conversationHistory));
+}
+
+function processModelText(text) {
+  return text.replace(/\{BG(\d+\.\d+)\}/g, (match, p1) => {
+    const parts = p1.split('.');
+    return `<a href="/?ch=${parts[0]}&v=${parts[1]}" target="_parent" style="cursor:pointer;">BG ${p1}</a>`;
+  });
+}
+
+function renderInitialHistory() {
+  if (conversationHistory.length === 0) return;
+  
+  const messagesDiv = document.getElementById('chat-messages');
+  // Clear the static default greeting since we have history
+  messagesDiv.innerHTML = '';
+  
+  conversationHistory.forEach(msg => {
+    const bubble = document.createElement('div');
+    bubble.className = `message ${msg.role === 'user' ? 'user' : 'bot'}`;
+    if (msg.role === 'model') {
+      bubble.innerHTML = processModelText(msg.text);
+    } else {
+      bubble.textContent = msg.text;
+    }
+    messagesDiv.appendChild(bubble);
+  });
+  
+  setTimeout(() => messagesDiv.scrollTop = messagesDiv.scrollHeight, 100);
+}
 
 async function sendMessage(text) {
   const messagesDiv = document.getElementById('chat-messages');
@@ -10,6 +42,7 @@ async function sendMessage(text) {
 
   // Add User Message
   conversationHistory.push({ role: 'user', text });
+  saveHistory();
   
   const userMsgBubble = document.createElement('div');
   userMsgBubble.className = 'message user';
@@ -37,22 +70,17 @@ async function sendMessage(text) {
     if (data.error) throw new Error(data.error);
 
     conversationHistory.push({ role: 'model', text: data.text });
-    
-    // Parse shloka links e.g. {BG2.14}
-    let htmlText = data.text;
-    htmlText = htmlText.replace(/\{BG(\d+\.\d+)\}/g, (match, p1) => {
-      const parts = p1.split('.');
-      return `<a href="/?ch=${parts[0]}&v=${parts[1]}">BG ${p1}</a>`;
-    });
+    saveHistory();
 
     const botMsgBubble = document.createElement('div');
     botMsgBubble.className = 'message bot';
-    botMsgBubble.innerHTML = htmlText;
+    botMsgBubble.innerHTML = processModelText(data.text);
     messagesDiv.appendChild(botMsgBubble);
 
   } catch (err) {
     console.error('Chat Error:', err);
     conversationHistory.pop(); // Remove user msg from history state if failed
+    saveHistory();
     
     const errMsgBubble = document.createElement('div');
     errMsgBubble.className = 'message bot';
@@ -80,15 +108,22 @@ document.getElementById('chat-form').addEventListener('submit', (e) => {
 initLanguage();
 initStars();
 initMobileNav();
+renderInitialHistory();
 
 // Handle Floating Widget Minimal View
 if (window.location.search.includes('minimal=true')) {
-  document.querySelector('.nav').style.display = 'none';
-  document.querySelector('.header').style.display = 'none';
-  document.querySelector('footer').style.display = 'none';
-  document.querySelector('.chat-container').style.height = '100vh';
-  document.querySelector('.chat-container').style.borderRadius = '0';
-  document.querySelector('.chat-container').style.border = 'none';
+  const nav = document.querySelector('.nav');
+  const header = document.querySelector('.page-header');
+  const footer = document.querySelector('footer');
+  const chatContainer = document.querySelector('.chat-container');
+  if (nav) nav.style.display = 'none';
+  if (header) header.style.display = 'none';
+  if (footer) footer.style.display = 'none';
+  if (chatContainer) {
+    chatContainer.style.height = '100vh';
+    chatContainer.style.borderRadius = '0';
+    chatContainer.style.border = 'none';
+  }
   document.body.style.padding = '0';
   document.body.style.margin = '0';
 }

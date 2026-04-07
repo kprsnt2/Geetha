@@ -200,12 +200,30 @@ window.__showBlogDetail = function(blogId) {
       return;
     }
     
-    const utter = new SpeechSynthesisUtterance(fixedContent.replace(/<br>/g, ' '));
+    // Strip all HTML tags and use clean plain text for TTS
+    const plainText = fixedContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const utter = new SpeechSynthesisUtterance(plainText);
     utter.lang = lang === 'te' ? 'te-IN' : 'en-US';
     utter.rate = 0.9;
     
+    // Pick the best matching voice
+    const voices = speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
+      if (targetVoices.length > 0) {
+        utter.voice = targetVoices[0];
+      } else if (lang === 'te') {
+        alert("Telugu voice isn't installed on your device. Try on an Android phone, or install Telugu in your OS settings!");
+        speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+        return;
+      }
+    }
+    
     speechBtn.innerHTML = '⏹ <span style="font-size:0.8rem">Stop Reading</span>';
     utter.onend = () => {
+      speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+    };
+    utter.onerror = () => {
       speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
     };
     speechSynthesis.speak(utter);

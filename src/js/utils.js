@@ -123,7 +123,9 @@ export function initChatWidget() {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 26px;
+      line-height: 1;
+      padding-bottom: 2px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       cursor: pointer;
       z-index: 9999;

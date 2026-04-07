@@ -85,38 +85,53 @@ function renderShloka(data) {
     translationsEl.innerHTML += `<div class="translation-block lang-content" data-lang="en"><h4>Translation:</h4><p>${shloka.english_translation}</p></div>`;
   }
   
-  // Attach Audio Button
-  if (!document.getElementById('audio-shloka-btn')) {
-    const audioBtn = document.createElement('button');
-    audioBtn.id = 'audio-shloka-btn';
-    audioBtn.className = 'play-btn';
-    audioBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
-    audioBtn.style.cssText = 'position: absolute; top: -15px; right: 20px; background: var(--bg-glass); border: 1px solid var(--border-light); color: var(--primary); border-radius: 20px; padding: 4px 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;';
-    translationsEl.parentElement.style.position = 'relative';
-    translationsEl.parentElement.appendChild(audioBtn);
-  }
-  
+  // Attach Audio Button — uses Web Speech API to read transliteration + translation
   const playBtn = document.getElementById('audio-shloka-btn');
-  playBtn.onclick = () => {
-    if (window.currentAudio) {
-      window.currentAudio.pause();
-      if (window.currentAudio.shlokaId === shloka.id) {
-        window.currentAudio = null;
+  if (playBtn) {
+    playBtn.style.display = 'flex';
+    playBtn.onclick = () => {
+      if (!('speechSynthesis' in window)) return alert('Voice not supported in this browser.');
+
+      // Toggle off if already speaking
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
         playBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
         return;
       }
-    }
-    // Use github's raw gita/gita dataset
-    const audio = new Audio(`https://github.com/gita/gita/raw/main/data/audio/${shloka.chapter}_${shloka.verse}.mp3`);
-    audio.shlokaId = shloka.id;
-    window.currentAudio = audio;
-    audio.play();
-    playBtn.innerHTML = '⏸ <span style="font-size:0.8rem">Pause</span>';
-    audio.onended = () => {
-      playBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
-      window.currentAudio = null;
+
+      // Read the transliteration (romanised Sanskrit) and the translation
+      const translitText = (shloka.transliteration || '').replace(/\n/g, '. ');
+      const transText = lang === 'te' && shloka.telugu_translation
+        ? shloka.telugu_translation
+        : (shloka.english_translation || '');
+      const fullText = translitText + '. . . ' + transText;
+
+      const utter = new SpeechSynthesisUtterance(fullText);
+      utter.lang = lang === 'te' ? 'te-IN' : 'en-US';
+      utter.rate = 0.85;
+
+      // Pick the best matching voice
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
+        if (targetVoices.length > 0) {
+          utter.voice = targetVoices[0];
+        } else if (lang === 'te') {
+          alert("Telugu voice isn't installed on your device. Try on an Android phone, or install Telugu in your OS settings!");
+          return;
+        }
+      }
+
+      playBtn.innerHTML = '⏸ <span style="font-size:0.8rem">Stop</span>';
+      utter.onend = () => {
+        playBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
+      };
+      utter.onerror = () => {
+        playBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
+      };
+      speechSynthesis.speak(utter);
     };
-  };
+  }
 
   // Progress
   const percent = ((dayNumber / totalVerses) * 100).toFixed(1);
@@ -151,28 +166,61 @@ function updateLesson(blog, lang) {
   if (content) {
     const fixedContent = content.replace(/\\n/g, '\n');
     el.innerHTML = fixedContent.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+
+    // Attach Speech Synthesis button
+    let speechBtn = document.getElementById('audio-lesson-btn');
+    if (!speechBtn) {
+      speechBtn = document.createElement('button');
+      speechBtn.id = 'audio-lesson-btn';
+      speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+      speechBtn.style.cssText = 'background: var(--bg-glass); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 20px; padding: 4px 12px; cursor: pointer; float: right; margin-bottom: 1rem;';
+      el.parentElement.insertBefore(speechBtn, el);
+    }
+    
+    speechBtn.onclick = () => {
+      if (!('speechSynthesis' in window)) return alert('Voice not supported in this browser.');
+      
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+        return;
+      }
+      
+      // Strip all HTML and use plain text for TTS
+      const plainText = fixedContent.replace(/\\n/g, '\n').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      const utter = new SpeechSynthesisUtterance(plainText);
+      utter.lang = lang === 'te' ? 'te-IN' : 'en-US';
+      utter.rate = 0.9;
+      
+      // Pick the best matching voice
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
+        if (targetVoices.length > 0) {
+          utter.voice = targetVoices[0];
+        } else if (lang === 'te') {
+          alert("Telugu voice isn't installed on your device. Try on an Android phone, or install Telugu in your OS settings!");
+          speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+          return;
+        }
+      }
+      
+      speechBtn.innerHTML = '⏹ <span style="font-size:0.8rem">Stop Reading</span>';
+      utter.onend = () => {
+        speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+      };
+      utter.onerror = () => {
+        speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+      };
+      speechSynthesis.speak(utter);
+    };
   }
 }
 
 // Language change handler
-window.addEventListener('langchange', (e) => {
+window.addEventListener('langchange', () => {
   if (currentData) {
-    const lang = e.detail.lang;
-    if (currentData.shloka) updateTranslation(currentData.shloka, lang);
-    if (currentData.blog) updateLesson(currentData.blog, lang);
-    
-    // Update chapter info
-    const shloka = currentData.shloka;
-    if (shloka) {
-      const chName = CHAPTER_NAMES[shloka.chapter] || { en: '', te: '' };
-      document.getElementById('chapter-info').textContent = lang === 'te'
-        ? `అధ్యాయం ${shloka.chapter} — ${chName.te}`
-        : `Chapter ${shloka.chapter} — ${chName.en}`;
-      
-      document.getElementById('progress-start').textContent = lang === 'te'
-        ? `అధ్యాయం ${shloka.chapter}, శ్లోకం ${shloka.verse}`
-        : `Chapter ${shloka.chapter}, Verse ${shloka.verse}`;
-    }
+    renderShloka(currentData);
   }
 });
 

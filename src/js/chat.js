@@ -1,6 +1,38 @@
 import { initLanguage, initStars, initMobileNav, getLang } from './utils.js';
 
-let conversationHistory = [];
+let conversationHistory = JSON.parse(sessionStorage.getItem('geetha-chat-history')) || [];
+
+function saveHistory() {
+  sessionStorage.setItem('geetha-chat-history', JSON.stringify(conversationHistory));
+}
+
+function processModelText(text) {
+  return text.replace(/\{BG(\d+\.\d+)\}/g, (match, p1) => {
+    const parts = p1.split('.');
+    return `<a href="/?ch=${parts[0]}&v=${parts[1]}" target="_parent" style="cursor:pointer;">BG ${p1}</a>`;
+  });
+}
+
+function renderInitialHistory() {
+  if (conversationHistory.length === 0) return;
+  
+  const messagesDiv = document.getElementById('chat-messages');
+  // Clear the static default greeting since we have history
+  messagesDiv.innerHTML = '';
+  
+  conversationHistory.forEach(msg => {
+    const bubble = document.createElement('div');
+    bubble.className = `message ${msg.role === 'user' ? 'user' : 'bot'}`;
+    if (msg.role === 'model') {
+      bubble.innerHTML = processModelText(msg.text);
+    } else {
+      bubble.textContent = msg.text;
+    }
+    messagesDiv.appendChild(bubble);
+  });
+  
+  setTimeout(() => messagesDiv.scrollTop = messagesDiv.scrollHeight, 100);
+}
 
 async function sendMessage(text) {
   const messagesDiv = document.getElementById('chat-messages');
@@ -10,6 +42,7 @@ async function sendMessage(text) {
 
   // Add User Message
   conversationHistory.push({ role: 'user', text });
+  saveHistory();
   
   const userMsgBubble = document.createElement('div');
   userMsgBubble.className = 'message user';
@@ -37,22 +70,17 @@ async function sendMessage(text) {
     if (data.error) throw new Error(data.error);
 
     conversationHistory.push({ role: 'model', text: data.text });
-    
-    // Parse shloka links e.g. {BG2.14}
-    let htmlText = data.text;
-    htmlText = htmlText.replace(/\{BG(\d+\.\d+)\}/g, (match, p1) => {
-      const parts = p1.split('.');
-      return `<a href="/?ch=${parts[0]}&v=${parts[1]}" target="_parent" style="cursor:pointer;">BG ${p1}</a>`;
-    });
+    saveHistory();
 
     const botMsgBubble = document.createElement('div');
     botMsgBubble.className = 'message bot';
-    botMsgBubble.innerHTML = htmlText;
+    botMsgBubble.innerHTML = processModelText(data.text);
     messagesDiv.appendChild(botMsgBubble);
 
   } catch (err) {
     console.error('Chat Error:', err);
     conversationHistory.pop(); // Remove user msg from history state if failed
+    saveHistory();
     
     const errMsgBubble = document.createElement('div');
     errMsgBubble.className = 'message bot';
@@ -80,6 +108,7 @@ document.getElementById('chat-form').addEventListener('submit', (e) => {
 initLanguage();
 initStars();
 initMobileNav();
+renderInitialHistory();
 
 // Handle Floating Widget Minimal View
 if (window.location.search.includes('minimal=true')) {

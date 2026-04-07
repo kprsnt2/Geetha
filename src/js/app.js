@@ -151,6 +151,55 @@ function updateLesson(blog, lang) {
   if (content) {
     const fixedContent = content.replace(/\\n/g, '\n');
     el.innerHTML = fixedContent.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+
+    // Attach Speech Synthesis button
+    let speechBtn = document.getElementById('audio-lesson-btn');
+    if (!speechBtn) {
+      speechBtn = document.createElement('button');
+      speechBtn.id = 'audio-lesson-btn';
+      speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+      speechBtn.style.cssText = 'background: var(--bg-glass); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 20px; padding: 4px 12px; cursor: pointer; float: right; margin-bottom: 1rem;';
+      el.parentElement.insertBefore(speechBtn, el);
+    }
+    
+    speechBtn.onclick = () => {
+      if (!('speechSynthesis' in window)) return alert('Voice not supported in this browser.');
+      
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+        return;
+      }
+      
+      const utter = new SpeechSynthesisUtterance(fixedContent.replace(/<br>/g, ' '));
+      utter.lang = lang === 'te' ? 'te-IN' : 'en-US';
+      utter.rate = 0.9;
+      
+      // Explicitly try to find a matching voice (solves some Chrome bugs)
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
+        if (targetVoices.length > 0) {
+          utter.voice = targetVoices[0];
+        } else if (lang === 'te') {
+          alert('Telugu voice pack is not installed on your OS. Please install it in system settings or switch to English.');
+          speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+          return;
+        }
+      }
+      
+      speechBtn.innerHTML = '⏹ <span style="font-size:0.8rem">Stop Reading</span>';
+      utter.onend = () => {
+        speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+      };
+      
+      utter.onerror = (e) => {
+        speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+        console.error('Speech synthesis error:', e);
+      };
+      
+      speechSynthesis.speak(utter);
+    };
   }
 }
 

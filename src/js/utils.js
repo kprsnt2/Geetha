@@ -101,3 +101,91 @@ export function formatDate(dateStr, lang = 'en') {
   }
   return d.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
 }
+
+// ═══════════════════════════════════════════
+// FLOATING CHAT WIDGET
+// ═══════════════════════════════════════════
+export function initChatWidget() {
+  // We only show floating widget if not already on chat page
+  if (window.location.pathname.includes('chat.html')) return;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .chat-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--bg-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 9999;
+      transition: transform 0.2s;
+    }
+    .chat-fab:hover { transform: scale(1.1); }
+    .chat-popup {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 350px;
+      height: 500px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px) scale(0.95);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-origin: bottom right;
+      overflow: hidden;
+    }
+    .chat-popup.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+    @media (max-width: 480px) {
+      .chat-popup {
+        width: calc(100% - 48px);
+        height: 60vh;
+        bottom: 90px;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const popup = document.createElement('div');
+  popup.className = 'chat-popup';
+  popup.innerHTML = '<iframe src="/chat.html?minimal=true" style="width:100%;height:100%;border:none;"></iframe>';
+  document.body.appendChild(popup);
+
+  const fab = document.createElement('div');
+  fab.className = 'chat-fab';
+  fab.innerHTML = '✨';
+  fab.title = "Ask Gita AI";
+  fab.addEventListener('click', () => {
+    popup.classList.toggle('open');
+    if (popup.classList.contains('open')) {
+      fab.innerHTML = '✖';
+      fab.style.background = 'var(--bg-glass)';
+      fab.style.color = 'white';
+      fab.style.border = '1px solid var(--border-light)';
+    } else {
+      fab.innerHTML = '✨';
+      fab.style.background = 'var(--primary)';
+      fab.style.color = 'var(--bg-dark)';
+      fab.style.border = 'none';
+    }
+  });
+
+  document.body.appendChild(fab);
+}

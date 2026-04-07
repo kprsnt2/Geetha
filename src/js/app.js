@@ -1,7 +1,7 @@
 /**
  * Main page — Daily Shloka
  */
-import { initLanguage, initStars, initMobileNav, apiFetch, getLang, formatDate } from './utils.js';
+import { initLanguage, initStars, initMobileNav, apiFetch, getLang, formatDate, initChatWidget } from './utils.js';
 
 // Chapter names for display
 const CHAPTER_NAMES = {
@@ -73,10 +73,50 @@ function renderShloka(data) {
 
   // Sanskrit
   document.getElementById('sanskrit-text').textContent = shloka.slok || '';
-  document.getElementById('transliteration').textContent = shloka.transliteration || '';
-
-  // Translation
-  updateTranslation(shloka, lang);
+  document.getElementById('sanskrit-text').innerHTML = shloka.slok.replace(/\n/g, '<br>');
+  document.getElementById('transliteration').innerHTML = shloka.transliteration.replace(/\n/g, '<br>');
+  
+  const translationsEl = document.getElementById('shloka-translations');
+  translationsEl.innerHTML = '';
+  
+  if (lang === 'te' && shloka.telugu_translation) {
+    translationsEl.innerHTML += `<div class="translation-block lang-content" data-lang="te"><h4>తాత్పర్యం:</h4><p>${shloka.telugu_translation}</p></div>`;
+  } else if (shloka.english_translation) {
+    translationsEl.innerHTML += `<div class="translation-block lang-content" data-lang="en"><h4>Translation:</h4><p>${shloka.english_translation}</p></div>`;
+  }
+  
+  // Attach Audio Button
+  if (!document.getElementById('audio-shloka-btn')) {
+    const audioBtn = document.createElement('button');
+    audioBtn.id = 'audio-shloka-btn';
+    audioBtn.className = 'play-btn';
+    audioBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
+    audioBtn.style.cssText = 'position: absolute; top: -15px; right: 20px; background: var(--bg-glass); border: 1px solid var(--border-light); color: var(--primary); border-radius: 20px; padding: 4px 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;';
+    translationsEl.parentElement.style.position = 'relative';
+    translationsEl.parentElement.appendChild(audioBtn);
+  }
+  
+  const playBtn = document.getElementById('audio-shloka-btn');
+  playBtn.onclick = () => {
+    if (window.currentAudio) {
+      window.currentAudio.pause();
+      if (window.currentAudio.shlokaId === shloka.id) {
+        window.currentAudio = null;
+        playBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
+        return;
+      }
+    }
+    // Use github's raw gita/gita dataset
+    const audio = new Audio(`https://github.com/gita/gita/raw/main/data/audio/${shloka.chapter}_${shloka.verse}.mp3`);
+    audio.shlokaId = shloka.id;
+    window.currentAudio = audio;
+    audio.play();
+    playBtn.innerHTML = '⏸ <span style="font-size:0.8rem">Pause</span>';
+    audio.onended = () => {
+      playBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
+      window.currentAudio = null;
+    };
+  };
 
   // Progress
   const percent = ((dayNumber / totalVerses) * 100).toFixed(1);
@@ -99,22 +139,14 @@ function renderShloka(data) {
   }
 }
 
-function updateTranslation(shloka, lang) {
-  const el = document.getElementById('translation');
-  const label = document.getElementById('translation-label');
-  
-  if (lang === 'te' && shloka.telugu_translation) {
-    el.textContent = shloka.telugu_translation;
-    label.textContent = 'తెలుగు అనువాదం';
-  } else {
-    el.textContent = shloka.english_translation || 'Translation not available.';
-    label.textContent = lang === 'te' ? 'ఆంగ్ల అనువాదం' : 'English Translation';
-  }
-}
-
 function updateLesson(blog, lang) {
   const el = document.getElementById('lesson-content');
+  const titleEl = document.getElementById('lesson-title');
+  
   const content = lang === 'te' && blog.content_te ? blog.content_te : blog.content_en;
+  const title = lang === 'te' && blog.title_te ? blog.title_te : blog.title_en;
+  
+  if (titleEl) titleEl.textContent = title || (lang === 'te' ? 'జీవిత పాఠం' : 'Life Lesson');
   
   if (content) {
     const fixedContent = content.replace(/\\n/g, '\n');
@@ -198,6 +230,7 @@ async function loadSpecificShloka(chapter, verse) {
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
+initChatWidget();
 initLanguage();
 initStars();
 initMobileNav();

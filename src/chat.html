@@ -5,13 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>గీత | Spiritual Guide</title>
-  
-  <meta name="description" content="Chat with the Bhagavad Gita AI to find verse recommendations based on your mood, feelings, or questions.">
+
+  <meta name="description"
+    content="Chat with the Bhagavad Gita AI to find verse recommendations based on your mood, feelings, or questions.">
   <meta name="theme-color" content="#030712">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700&family=Martel:wght@400;700&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700&family=Martel:wght@400;700&family=Tiro+Telugu:ital@0;1&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="./css/styles.css">
 
   <style>
@@ -26,9 +29,9 @@
       border: 1px solid var(--border-light);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
-    
+
     .chat-header {
       padding: 1rem 1.5rem;
       border-bottom: 1px solid var(--border-light);
@@ -82,7 +85,7 @@
       text-decoration: underline;
       font-weight: 500;
     }
-    
+
     .message.bot a {
       color: var(--primary);
       background: rgba(251, 191, 36, 0.1);
@@ -131,8 +134,14 @@
       transition: all 0.2s ease;
     }
 
-    .chat-send:active { transform: scale(0.9); }
-    .chat-send:disabled { background: var(--text-muted); cursor: not-allowed; }
+    .chat-send:active {
+      transform: scale(0.9);
+    }
+
+    .chat-send:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+    }
 
     .typing-indicator {
       display: none;
@@ -148,8 +157,15 @@
     }
 
     @keyframes reveal {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -186,27 +202,35 @@
   <main>
     <header class="page-header">
       <h1 class="page-title" data-en="Spiritual Guide" data-te="ఆధ్యాత్మిక మార్గదర్శి">Spiritual Guide</h1>
-      <p class="page-subtitle" data-en="Share your feelings or ask a question. The Gita AI will recommend a verse for you." data-te="మీ భావాలను పంచుకోండి. గీత AI మీ కోసం ఒక శ్లోకాన్ని సిఫార్సు చేస్తుంది.">Share your feelings or ask a question. The Gita AI will recommend a verse for you.</p>
+      <p class="page-subtitle"
+        data-en="Share your feelings or ask a question. The Gita AI will recommend a verse for you."
+        data-te="మీ భావాలను పంచుకోండి. గీత AI మీ కోసం ఒక శ్లోకాన్ని సిఫార్సు చేస్తుంది.">Share your feelings or ask a
+        question. The Gita AI will recommend a verse for you.</p>
     </header>
 
     <section style="max-width: 900px; margin: 0 auto; padding: 0 var(--space-xl);">
       <div class="chat-container">
         <div class="chat-header">
           <h2>🧠 Gita AI</h2>
-          <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto;">Powered by Gemini & NVIDIA</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto;">Powered by Gemini &
+            NVIDIA</span>
         </div>
-        
+
         <div class="chat-messages" id="chat-messages">
-          <div class="message bot lang-content" data-en="Pranam. How are you feeling today? You can tell me your emotional state or ask a practical question, and I will find a relevant Bhagavad Gita shloka to read." data-te="ప్రణామం. ఈ రోజు మీరు ఎలా అనిపిస్తున్నారు? మీరు మీ మానసిక స్థితిని చెప్పవచ్చు లేదా ఏదైనా ప్రశ్న అడగవచ్చు, దానికి తగిన భగవద్గీత శ్లోకాన్ని నేను సిఫార్సు చేస్తాను.">
-            Pranam. How are you feeling today? You can tell me your emotional state or ask a practical question, and I will find a relevant Bhagavad Gita shloka to read.
+          <div class="message bot lang-content"
+            data-en="Namaste. How are you feeling today? You can tell me your emotional state or ask a practical question, and I will find a relevant Bhagavad Gita shloka to read."
+            data-te="నమస్కారం. ఈ రోజు మీరు ఎలా అనిపిస్తున్నారు? మీరు మీ మానసిక స్థితిని చెప్పవచ్చు లేదా ఏదైనా ప్రశ్న అడగవచ్చు, దానికి తగిన భగవద్గీత శ్లోకాన్ని నేను సిఫార్సు చేస్తాను.">
+            Namaste. How are you feeling today? You can tell me your emotional state or ask a practical question, and I
+            will find a relevant Bhagavad Gita shloka to read.
           </div>
         </div>
-        
+
         <div class="typing-indicator" id="typing-indicator">Contemplating the scriptures...</div>
 
         <form class="chat-input-container" id="chat-form">
           <div class="chat-input-wrapper">
-            <input type="text" id="chat-input" class="chat-input" placeholder="e.g. I am feeling anxious about my future..." autocomplete="off" required>
+            <input type="text" id="chat-input" class="chat-input"
+              placeholder="e.g. I am feeling anxious about my future..." autocomplete="off" required>
             <button type="submit" class="chat-send" id="chat-submit" aria-label="Send">↑</button>
           </div>
         </form>
@@ -221,4 +245,5 @@
 
   <script type="module" src="./js/chat.js"></script>
 </body>
+
 </html>

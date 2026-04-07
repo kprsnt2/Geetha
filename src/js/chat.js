@@ -112,12 +112,18 @@ renderInitialHistory();
 
 // Handle Floating Widget Minimal View
 if (window.location.search.includes('minimal=true')) {
-  document.querySelector('.nav').style.display = 'none';
-  document.querySelector('.header').style.display = 'none';
-  document.querySelector('footer').style.display = 'none';
-  document.querySelector('.chat-container').style.height = '100vh';
-  document.querySelector('.chat-container').style.borderRadius = '0';
-  document.querySelector('.chat-container').style.border = 'none';
+  const nav = document.querySelector('.nav');
+  const header = document.querySelector('.page-header');
+  const footer = document.querySelector('footer');
+  const chatContainer = document.querySelector('.chat-container');
+  if (nav) nav.style.display = 'none';
+  if (header) header.style.display = 'none';
+  if (footer) footer.style.display = 'none';
+  if (chatContainer) {
+    chatContainer.style.height = '100vh';
+    chatContainer.style.borderRadius = '0';
+    chatContainer.style.border = 'none';
+  }
   document.body.style.padding = '0';
   document.body.style.margin = '0';
 }

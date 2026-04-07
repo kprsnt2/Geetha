@@ -1,7 +1,7 @@
 /**
  * Archive page — browse all 18 chapters and 700 verses
  */
-import { initLanguage, initStars, initMobileNav, apiFetch, getLang } from './utils.js';
+import { initLanguage, initStars, initMobileNav, apiFetch, getLang, initChatWidget } from './utils.js';
 
 const CHAPTERS = [
   { chapter: 1, verses: 47, en: "Arjuna Visada Yoga", te: "అర్జున విషాద యోగము" },
@@ -70,6 +70,7 @@ function renderArchive() {
 window.addEventListener('langchange', renderArchive);
 
 // Init
+initChatWidget();
 initLanguage();
 initStars();
 initMobileNav();

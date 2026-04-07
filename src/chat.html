@@ -155,73 +155,68 @@
 </head>
 
 <body data-lang="en">
+  <div class="cosmic-bg"></div>
   <div class="stars" id="stars"></div>
 
   <!-- Navigation -->
-  <nav class="nav">
-    <div class="nav-content">
-      <a href="/" class="logo">
-        <span class="logo-icon">🕉️</span>
-        <span data-en="Geetha" data-te="గీత">Geetha</span>
+  <nav class="nav" id="main-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="Home">
+        <span class="om">🕉️</span>
+        <span data-en="Bhagavad Gita" data-te="భగవద్గీత">Bhagavad Gita</span>
       </a>
 
-      <!-- Desktop Links -->
-      <div class="nav-links" id="nav-links">
-        <a href="/" class="nav-link" data-en="Today" data-te="నేడు">Today</a>
-        <a href="/archive.html" class="nav-link" data-en="Archive" data-te="భాండాగారం">Archive</a>
-        <a href="/blog.html" class="nav-link" data-en="Blog" data-te="బ్లాగ్">Blog</a>
-        <a href="/chat.html" class="nav-link active" data-en="Ask AI" data-te="సలహా">Ask AI</a>
-      </div>
+      <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle menu">☰</button>
 
-      <!-- Controls -->
-      <div class="nav-controls">
-        <div class="lang-toggle" id="lang-toggle">
-          <button class="lang-btn active" data-lang="en">EN</button>
-          <button class="lang-btn" data-lang="te">తె</button>
-        </div>
-        <button class="menu-toggle" id="mobile-toggle">☰</button>
-      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/" data-en="Daily Shloka" data-te="నేటి శ్లోకము">Daily Shloka</a></li>
+        <li><a href="/blog" data-en="Spiritual Blog" data-te="ఆధ్యాత్మిక బ్లాగ్">Spiritual Blog</a></li>
+        <li><a href="/chat" class="active" data-en="Ask AI" data-te="సలహా">Ask AI</a></li>
+        <li><a href="/archive" data-en="Archive" data-te="పూర్వ శ్లోకాలు">Archive</a></li>
+        <li>
+          <div class="lang-toggle" id="lang-toggle" role="group" aria-label="Language selector">
+            <button class="lang-btn active" data-lang="en" aria-label="English">EN</button>
+            <button class="lang-btn" data-lang="te" aria-label="Telugu">తె</button>
+          </div>
+        </li>
+      </ul>
     </div>
   </nav>
 
-  <main class="main">
-    <div class="container">
-      
-      <header class="header stagger">
-        <h1 class="page-title lang-content" data-en="Spiritual Guide" data-te="ఆధ్యాత్మిక మార్గదర్శి">Spiritual Guide</h1>
-        <p class="page-subtitle" data-en="Share your feelings or ask a question. The Gita AI will recommend a verse for you." data-te="మీ భావాలను పంచుకోండి. గీత AI మీ కోసం ఒక శ్లోకాన్ని సిఫార్సు చేస్తుంది.">Share your feelings or ask a question. The Gita AI will recommend a verse for you.</p>
-      </header>
+  <main>
+    <header class="page-header">
+      <h1 class="page-title" data-en="Spiritual Guide" data-te="ఆధ్యాత్మిక మార్గదర్శి">Spiritual Guide</h1>
+      <p class="page-subtitle" data-en="Share your feelings or ask a question. The Gita AI will recommend a verse for you." data-te="మీ భావాలను పంచుకోండి. గీత AI మీ కోసం ఒక శ్లోకాన్ని సిఫార్సు చేస్తుంది.">Share your feelings or ask a question. The Gita AI will recommend a verse for you.</p>
+    </header>
 
-      <section class="stagger">
-        <div class="chat-container">
-          <div class="chat-header">
-            <h2>🧠 Gita AI</h2>
-            <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto;">Powered by Gemini & NVIDIA</span>
-          </div>
-          
-          <div class="chat-messages" id="chat-messages">
-            <div class="message bot lang-content" data-en="Pranam. How are you feeling today? You can tell me your emotional state or ask a practical question, and I will find a relevant Bhagavad Gita shloka to read." data-te="ప్రణామం. ఈ రోజు మీరు ఎలా అనిపిస్తున్నారు? మీరు మీ మానసిక స్థితిని చెప్పవచ్చు లేదా ఏదైనా ప్రశ్న అడగవచ్చు, దానికి తగిన భగవద్గీత శ్లోకాన్ని నేను సిఫార్సు చేస్తాను.">
-              Pranam. How are you feeling today? You can tell me your emotional state or ask a practical question, and I will find a relevant Bhagavad Gita shloka to read.
-            </div>
-          </div>
-          
-          <div class="typing-indicator" id="typing-indicator">Contemplating the scriptures...</div>
-
-          <form class="chat-input-container" id="chat-form">
-            <div class="chat-input-wrapper">
-              <input type="text" id="chat-input" class="chat-input" placeholder="e.g. I am feeling anxious about my future..." autocomplete="off" required>
-              <button type="submit" class="chat-send" id="chat-submit" aria-label="Send">↑</button>
-            </div>
-          </form>
+    <section style="max-width: 900px; margin: 0 auto; padding: 0 var(--space-xl);">
+      <div class="chat-container">
+        <div class="chat-header">
+          <h2>🧠 Gita AI</h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto;">Powered by Gemini & NVIDIA</span>
         </div>
-      </section>
+        
+        <div class="chat-messages" id="chat-messages">
+          <div class="message bot lang-content" data-en="Pranam. How are you feeling today? You can tell me your emotional state or ask a practical question, and I will find a relevant Bhagavad Gita shloka to read." data-te="ప్రణామం. ఈ రోజు మీరు ఎలా అనిపిస్తున్నారు? మీరు మీ మానసిక స్థితిని చెప్పవచ్చు లేదా ఏదైనా ప్రశ్న అడగవచ్చు, దానికి తగిన భగవద్గీత శ్లోకాన్ని నేను సిఫార్సు చేస్తాను.">
+            Pranam. How are you feeling today? You can tell me your emotional state or ask a practical question, and I will find a relevant Bhagavad Gita shloka to read.
+          </div>
+        </div>
+        
+        <div class="typing-indicator" id="typing-indicator">Contemplating the scriptures...</div>
 
-    </div>
+        <form class="chat-input-container" id="chat-form">
+          <div class="chat-input-wrapper">
+            <input type="text" id="chat-input" class="chat-input" placeholder="e.g. I am feeling anxious about my future..." autocomplete="off" required>
+            <button type="submit" class="chat-send" id="chat-submit" aria-label="Send">↑</button>
+          </div>
+        </form>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
-  <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; border-top: 1px solid var(--border-light); font-size: 0.85rem; color: var(--text-muted);">
-    <p>© 2026 Geetha. AI Generated wisdom.</p>
+  <footer class="footer">
+    <p>© 2026 Bhagavad Gita. AI Generated wisdom.</p>
   </footer>
 
   <script type="module" src="./js/chat.js"></script>

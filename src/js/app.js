@@ -113,12 +113,13 @@ function renderShloka(data) {
       // Pick the best matching voice
       const voices = speechSynthesis.getVoices();
       if (voices.length > 0) {
-        const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
+        const query = lang === 'te' ? 'te' : 'en';
+        const targetVoices = voices.filter(v => 
+          v.lang.toLowerCase().includes(query) || 
+          (lang === 'te' && v.lang.toLowerCase().includes('tel'))
+        );
         if (targetVoices.length > 0) {
           utter.voice = targetVoices[0];
-        } else if (lang === 'te') {
-          alert("Telugu voice isn't installed on your device. Try on an Android phone, or install Telugu in your OS settings!");
-          return;
         }
       }
 
@@ -195,13 +196,13 @@ function updateLesson(blog, lang) {
       // Pick the best matching voice
       const voices = speechSynthesis.getVoices();
       if (voices.length > 0) {
-        const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
+        const query = lang === 'te' ? 'te' : 'en';
+        const targetVoices = voices.filter(v => 
+          v.lang.toLowerCase().includes(query) || 
+          (lang === 'te' && v.lang.toLowerCase().includes('tel'))
+        );
         if (targetVoices.length > 0) {
           utter.voice = targetVoices[0];
-        } else if (lang === 'te') {
-          alert("Telugu voice isn't installed on your device. Try on an Android phone, or install Telugu in your OS settings!");
-          speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
-          return;
         }
       }
       

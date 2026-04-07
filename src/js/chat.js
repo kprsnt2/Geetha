@@ -80,3 +80,15 @@ document.getElementById('chat-form').addEventListener('submit', (e) => {
 initLanguage();
 initStars();
 initMobileNav();
+
+// Handle Floating Widget Minimal View
+if (window.location.search.includes('minimal=true')) {
+  document.querySelector('.nav').style.display = 'none';
+  document.querySelector('.header').style.display = 'none';
+  document.querySelector('footer').style.display = 'none';
+  document.querySelector('.chat-container').style.height = '100vh';
+  document.querySelector('.chat-container').style.borderRadius = '0';
+  document.querySelector('.chat-container').style.border = 'none';
+  document.body.style.padding = '0';
+  document.body.style.margin = '0';
+}

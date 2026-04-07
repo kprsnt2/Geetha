@@ -42,7 +42,7 @@ async function sendMessage(text) {
     let htmlText = data.text;
     htmlText = htmlText.replace(/\{BG(\d+\.\d+)\}/g, (match, p1) => {
       const parts = p1.split('.');
-      return `<a href="/?ch=${parts[0]}&v=${parts[1]}">BG ${p1}</a>`;
+      return `<a href="/?ch=${parts[0]}&v=${parts[1]}" target="_parent" style="cursor:pointer;">BG ${p1}</a>`;
     });
 
     const botMsgBubble = document.createElement('div');

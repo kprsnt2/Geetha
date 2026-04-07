@@ -5,7 +5,8 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/blog", "destination": "/blog.html" },
-    { "source": "/archive", "destination": "/archive.html" }
+    { "source": "/archive", "destination": "/archive.html" },
+    { "source": "/chat", "destination": "/chat.html" }
   ],
   "headers": [
     {

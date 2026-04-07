@@ -204,15 +204,20 @@ window.__showBlogDetail = function(blogId) {
     utter.lang = lang === 'te' ? 'te-IN' : 'en-US';
     utter.rate = 0.9;
     
-    // Explicitly try to find a matching voice (solves some Chrome bugs)
-    const voices = speechSynthesis.getVoices();
+    // Force trigger Chromium voice load if empty
+    let voices = speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      // Small hack for instant trigger in some browsers
+      speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+      voices = speechSynthesis.getVoices();
+    }
+
     if (voices.length > 0) {
       const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
       if (targetVoices.length > 0) {
         utter.voice = targetVoices[0];
       } else if (lang === 'te') {
-        // If Telugu is requested but OS has zero Telugu voices installed
-        alert('Telugu voice pack is not installed on your device. Please install it in your OS settings or switch to English.');
+        alert("Telugu voice isn't installed on your Windows/Mac OS natively. Try accessing this site on an Android phone, or install Telugu in your OS settings!");
         speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
         return;
       }

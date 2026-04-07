@@ -86,18 +86,10 @@ function renderShloka(data) {
   }
   
   // Attach Audio Button
-  if (!document.getElementById('audio-shloka-btn')) {
-    const audioBtn = document.createElement('button');
-    audioBtn.id = 'audio-shloka-btn';
-    audioBtn.className = 'play-btn';
-    audioBtn.innerHTML = '🔊 <span style="font-size:0.8rem">Listen</span>';
-    audioBtn.style.cssText = 'position: absolute; top: -15px; right: 20px; background: var(--bg-glass); border: 1px solid var(--border-light); color: var(--primary); border-radius: 20px; padding: 4px 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;';
-    translationsEl.parentElement.style.position = 'relative';
-    translationsEl.parentElement.appendChild(audioBtn);
-  }
-  
   const playBtn = document.getElementById('audio-shloka-btn');
-  playBtn.onclick = () => {
+  if (playBtn) {
+    playBtn.style.display = 'flex';
+    playBtn.onclick = () => {
     if (window.currentAudio) {
       window.currentAudio.pause();
       if (window.currentAudio.shlokaId === shloka.id) {
@@ -117,6 +109,7 @@ function renderShloka(data) {
       window.currentAudio = null;
     };
   };
+  }
 
   // Progress
   const percent = ((dayNumber / totalVerses) * 100).toFixed(1);
@@ -175,14 +168,20 @@ function updateLesson(blog, lang) {
       utter.lang = lang === 'te' ? 'te-IN' : 'en-US';
       utter.rate = 0.9;
       
-      // Explicitly try to find a matching voice (solves some Chrome bugs)
-      const voices = speechSynthesis.getVoices();
+      // Force trigger Chromium voice load if empty
+      let voices = speechSynthesis.getVoices();
+      if (voices.length === 0) {
+        // Small hack for instant trigger in some browsers
+        speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+        voices = speechSynthesis.getVoices();
+      }
+
       if (voices.length > 0) {
         const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
         if (targetVoices.length > 0) {
           utter.voice = targetVoices[0];
         } else if (lang === 'te') {
-          alert('Telugu voice pack is not installed on your OS. Please install it in system settings or switch to English.');
+          alert("Telugu voice isn't installed on your Windows/Mac OS natively. Try accessing this site on an Android phone, or install Telugu in your OS settings!");
           speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
           return;
         }

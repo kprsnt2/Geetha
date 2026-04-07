@@ -196,8 +196,11 @@
           Chapter 1 — Arjuna Visada Yoga
         </div>
 
-        <!-- Shloka Card -->
-        <div class="shloka-card">
+        <div class="shloka-card" style="position: relative;">
+          <button id="audio-shloka-btn" class="play-btn" style="position: absolute; top: 16px; right: 20px; background: var(--bg-glass); border: 1px solid var(--border-light); color: var(--primary); border-radius: 20px; padding: 4px 12px; cursor: pointer; display: none; align-items: center; gap: 4px; z-index: 10;">
+            🔊 <span style="font-size:0.8rem">Listen</span>
+          </button>
+          
           <div class="sanskrit-text" id="sanskrit-text" itemprop="text" lang="sa">
             Loading...
           </div>

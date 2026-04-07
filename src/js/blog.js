@@ -200,24 +200,20 @@ window.__showBlogDetail = function(blogId) {
       return;
     }
     
-    const utter = new SpeechSynthesisUtterance(fixedContent.replace(/<br>/g, ' '));
+    // Strip all HTML tags and use clean plain text for TTS
+    const plainText = fixedContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const utter = new SpeechSynthesisUtterance(plainText);
     utter.lang = lang === 'te' ? 'te-IN' : 'en-US';
     utter.rate = 0.9;
     
-    // Force trigger Chromium voice load if empty
-    let voices = speechSynthesis.getVoices();
-    if (voices.length === 0) {
-      // Small hack for instant trigger in some browsers
-      speechSynthesis.speak(new SpeechSynthesisUtterance(""));
-      voices = speechSynthesis.getVoices();
-    }
-
+    // Pick the best matching voice
+    const voices = speechSynthesis.getVoices();
     if (voices.length > 0) {
       const targetVoices = voices.filter(v => v.lang.includes(lang === 'te' ? 'te' : 'en'));
       if (targetVoices.length > 0) {
         utter.voice = targetVoices[0];
       } else if (lang === 'te') {
-        alert("Telugu voice isn't installed on your Windows/Mac OS natively. Try accessing this site on an Android phone, or install Telugu in your OS settings!");
+        alert("Telugu voice isn't installed on your device. Try on an Android phone, or install Telugu in your OS settings!");
         speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
         return;
       }
@@ -227,13 +223,9 @@ window.__showBlogDetail = function(blogId) {
     utter.onend = () => {
       speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
     };
-    
-    // Handle generic interruption or silently skipped
-    utter.onerror = (e) => {
+    utter.onerror = () => {
       speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
-      console.error('Speech synthesis error:', e);
     };
-    
     speechSynthesis.speak(utter);
   };
 

@@ -97,8 +97,26 @@ module.exports = async function handler(req, res) {
 
     loadSegments();
 
-    const dayNumber = getDayNumber();
-    const { chapter, verse } = dayToCV(dayNumber);
+    const qCh = parseInt(req.query.ch);
+    const qV = parseInt(req.query.v);
+    
+    let chapter, verse, dayNumber;
+    
+    if (qCh && qV) {
+      chapter = qCh;
+      verse = qV;
+      // Calculate dayNumber locally for this specific verse
+      const verseCounts = [0, 47, 72, 43, 42, 29, 47, 30, 28, 34, 42, 55, 20, 35, 27, 20, 24, 28, 78];
+      dayNumber = 0;
+      for (let i = 1; i < chapter; i++) dayNumber += verseCounts[i];
+      dayNumber += verse;
+    } else {
+      dayNumber = getDayNumber();
+      const cv = dayToCV(dayNumber);
+      chapter = cv.chapter;
+      verse = cv.verse;
+    }
+    
     const shlokaId = `BG${chapter}.${verse}`;
 
     // Get shloka

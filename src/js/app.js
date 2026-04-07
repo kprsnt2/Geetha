@@ -28,21 +28,17 @@ const CHAPTER_NAMES = {
 let currentData = null;
 
 async function loadDailyShloka() {
-  try {
-    const data = await apiFetch('daily');
-    currentData = data;
-    renderShloka(data);
-  } catch (err) {
-    console.error('Failed to load shloka:', err);
-    document.getElementById('loading').innerHTML = `
-      <div class="empty-state">
-        <div class="icon">📿</div>
-        <p>Unable to load today's shloka. The database may not be ready yet.</p>
-        <pre style="text-align:left; background:#111; color:#f88; padding:1rem; font-size:0.75rem; margin-top:1rem; overflow-x:auto;">${err.message}</pre>
-        <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">Run <code>node scripts/fetch-all-shlokas.js</code> to populate the database.</p>
-      </div>
-    `;
+  const saved = localStorage.getItem('geetha-progress');
+  if (saved) {
+    try {
+      const { ch, v } = JSON.parse(saved);
+      if (ch && v) {
+        return loadSpecificShloka(ch, v);
+      }
+    } catch(e) {}
   }
+  // Default for fresh users: Chapter 1, Verse 1
+  return loadSpecificShloka(1, 1);
 }
 
 function renderShloka(data) {
@@ -94,9 +90,12 @@ function renderShloka(data) {
     : `Chapter ${shloka.chapter}, Verse ${shloka.verse}`;
 
   // Blog / Life Lesson
+  const lessonSection = document.getElementById('lesson-section');
   if (blog) {
-    document.getElementById('lesson-section').style.display = 'block';
+    lessonSection.style.display = 'block';
     updateLesson(blog, lang);
+  } else {
+    lessonSection.style.display = 'none';
   }
 }
 
@@ -175,25 +174,24 @@ document.getElementById('btn-next')?.addEventListener('click', () => {
 
 async function loadSpecificShloka(chapter, verse) {
   try {
-    const data = await apiFetch(`shloka?chapter=${chapter}&verse=${verse}`);
+    const data = await apiFetch(`daily?ch=${chapter}&v=${verse}`);
     if (data.shloka) {
-      // Calculate day number
-      const verseCounts = [0, 47, 72, 43, 42, 29, 47, 30, 28, 34, 42, 55, 20, 35, 27, 20, 24, 28, 78];
-      let dayNum = 0;
-      for (let i = 1; i < chapter; i++) dayNum += verseCounts[i];
-      dayNum += verse;
+      // Save global progress
+      localStorage.setItem('geetha-progress', JSON.stringify({ ch: chapter, v: verse }));
       
-      currentData = {
-        dayNumber: dayNum,
-        totalVerses: 700,
-        shloka: data.shloka,
-        blog: null,
-      };
+      currentData = data;
       renderShloka(currentData);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   } catch (err) {
     console.error('Failed to load shloka:', err);
+    document.getElementById('loading').innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📿</div>
+        <p>Unable to load the requested shloka.</p>
+        <pre style="text-align:left; background:#111; color:#f88; padding:1rem; font-size:0.75rem; margin-top:1rem; overflow-x:auto;">${err.message}</pre>
+      </div>
+    `;
   }
 }
 

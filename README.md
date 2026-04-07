@@ -11,6 +11,10 @@
 ![AI Powered](https://img.shields.io/badge/AI-Gemini-purple?style=for-the-badge)
 ![Deploy](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge)
 
+<br>
+
+<img src="./public/og-image.png" alt="Geetha Platform Preview" width="800" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+
 </div>
 
 ---
@@ -162,6 +166,15 @@ On push to `main`, GitHub Actions will:
 - **AI**: Google Gemini (blog generation, translation, segmentation)
 - **Data Source**: [Vedic Scriptures API](https://vedicscriptures.github.io/)
 - **CI/CD**: GitHub Actions + Vercel
+
+## ✨ Credits & Acknowledgments
+
+This platform is built with gratitude using the following powerful tools and services:
+
+- **[Vedic Scriptures API](https://vedicscriptures.github.io/)**: The core engine providing the Sanskrit shlokas, English translations, transliterations, and commentaries. A tremendous open-source effort to digitize Hindu scriptures.
+- **[Google Gemini AI](https://aistudio.google.com/)**: Powers the dynamic translations, generation of spiritual segment blogs, and automated summarizations.
+- **[Vite](https://vitejs.dev/)** & **[Vercel](https://vercel.com/)**: Frontend tooling and serverless hosting infrastructure.
+- **[sql.js](https://sql.js.org/)**: Enables the lightning-fast serverless SQLite database powering the API.
 
 ## 📜 License
 

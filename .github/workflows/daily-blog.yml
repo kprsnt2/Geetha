@@ -1,9 +1,6 @@
-name: Daily Gita Blog Generation
+name: Process Personal Drafts
 
 on:
-  schedule:
-    # Run at midnight IST (18:30 UTC previous day)
-    - cron: '30 18 * * *'
   push:
     branches: [main]
     paths:
@@ -26,12 +23,12 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Generate daily blog
+      - name: Process drafts and generate blogs
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node scripts/daily-generate.js
+        run: node scripts/process-drafts.js
 
       - name: Checkpoint database
         run: node scripts/checkpoint-db.js
@@ -44,4 +41,4 @@ jobs:
           git config user.name "Gita Bot 🙏"
           git config user.email "bot@geetha.app"
           git add data/geetha.db data/geetha-slim.db blog_drafts/published/
-          git diff --staged --quiet || (git commit -m "🕉️ Daily shloka blog - $(date -u '+%Y-%m-%d')" && git push)
+          git diff --staged --quiet || (git commit -m "🕉️ Processed life notes drafts - $(date -u '+%Y-%m-%d')" && git push)

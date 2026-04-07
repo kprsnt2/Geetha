@@ -1,0 +1,37 @@
+# Geetha — Bhagavad Gita Daily Shloka Platform
+# https://geetha.kprsnt.in
+
+User-agent: *
+Allow: /
+Allow: /blog
+Allow: /archive
+Allow: /api/daily
+Allow: /api/shloka
+Allow: /api/blogs
+
+Disallow: /api/daily?
+Disallow: /api/shloka?
+
+Sitemap: https://geetha.kprsnt.in/sitemap.xml
+
+# AI Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /

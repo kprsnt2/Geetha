@@ -50,7 +50,7 @@ module.exports = async function handler(req, res) {
     if (!db) return res.status(503).json({ error: 'Database not available' });
 
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 500;
     const type = req.query.type; // 'ai' or 'personal'
     const offset = (page - 1) * limit;
 
@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
        FROM blogs b 
        LEFT JOIN shlokas s ON b.shloka_id = s.id 
        ${where} 
-       ORDER BY b.created_at DESC 
+       ORDER BY s.day_number ASC 
        LIMIT ${limit} OFFSET ${offset}`
     );
 

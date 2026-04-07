@@ -118,7 +118,8 @@ function updateLesson(blog, lang) {
   const content = lang === 'te' && blog.content_te ? blog.content_te : blog.content_en;
   
   if (content) {
-    el.innerHTML = content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+    const fixedContent = content.replace(/\\n/g, '\n');
+    el.innerHTML = fixedContent.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
   }
 }
 

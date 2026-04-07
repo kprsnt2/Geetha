@@ -25,7 +25,7 @@ async function loadBlogs(filter = 'all') {
     }
 
     empty.style.display = 'none';
-    renderBlogList(allBlogs);
+    renderViews(allBlogs);
   } catch (err) {
     console.error('Failed to load blogs:', err);
     if (loading) loading.innerHTML = `
@@ -37,6 +37,81 @@ async function loadBlogs(filter = 'all') {
   }
 }
 
+let currentViewMode = 'grid';
+
+const CHAPTERS = [
+  { chapter: 1, verses: 47, en: "Arjuna Visada Yoga", te: "అర్జున విషాద యోగము" },
+  { chapter: 2, verses: 72, en: "Sankhya Yoga", te: "సాంఖ్య యోగము" },
+  { chapter: 3, verses: 43, en: "Karma Yoga", te: "కర్మ యోగము" },
+  { chapter: 4, verses: 42, en: "Jnana Karma Sanyasa Yoga", te: "జ్ఞాన కర్మ సన్యాస యోగము" },
+  { chapter: 5, verses: 29, en: "Karma Sanyasa Yoga", te: "కర్మ సన్యాస యోగము" },
+  { chapter: 6, verses: 47, en: "Dhyana Yoga", te: "ధ్యాన యోగము" },
+  { chapter: 7, verses: 30, en: "Jnana Vijnana Yoga", te: "జ్ఞాన విజ్ఞాన యోగము" },
+  { chapter: 8, verses: 28, en: "Akshara Brahma Yoga", te: "అక్షర బ్రహ్మ యోగము" },
+  { chapter: 9, verses: 34, en: "Raja Vidya Raja Guhya Yoga", te: "రాజ విద్యా రాజ గుహ్య యోగము" },
+  { chapter: 10, verses: 42, en: "Vibhuti Yoga", te: "విభూతి యోగము" },
+  { chapter: 11, verses: 55, en: "Viswarupa Darshana Yoga", te: "విశ్వరూప దర్శన యోగము" },
+  { chapter: 12, verses: 20, en: "Bhakti Yoga", te: "భక్తి యోగము" },
+  { chapter: 13, verses: 35, en: "Kshetra Kshetrajna Vibhaga Yoga", te: "క్షేత్ర క్షేత్రజ్ఞ విభాగ యోగము" },
+  { chapter: 14, verses: 27, en: "Gunatraya Vibhaga Yoga", te: "గుణత్రయ విభాగ యోగము" },
+  { chapter: 15, verses: 20, en: "Purushottama Yoga", te: "పురుషోత్తమ యోగము" },
+  { chapter: 16, verses: 24, en: "Daivasura Sampad Vibhaga Yoga", te: "దైవాసుర సంపద్ విభాగ యోగము" },
+  { chapter: 17, verses: 28, en: "Shraddhatraya Vibhaga Yoga", te: "శ్రద్ధాత్రయ విభాగ యోగము" },
+  { chapter: 18, verses: 78, en: "Moksha Sanyasa Yoga", te: "మోక్ష సన్యాస యోగము" },
+];
+
+function renderViews(blogs) {
+  if (currentViewMode === 'grid') {
+    document.getElementById('blog-grid').style.display = 'none';
+    document.getElementById('blog-grid-view').style.display = 'grid';
+    renderBlogGrid(blogs);
+  } else {
+    document.getElementById('blog-grid-view').style.display = 'none';
+    document.getElementById('blog-grid').style.display = 'grid';
+    renderBlogList(blogs);
+  }
+}
+
+function renderBlogGrid(blogs) {
+  const grid = document.getElementById('blog-grid-view');
+  const lang = getLang();
+
+  // Create a fast lookup map for blogs by chapter-verse
+  const blogMap = {};
+  blogs.forEach(b => {
+    if (b.chapter && b.verse) {
+      blogMap[`${b.chapter}-${b.verse}`] = b.id;
+    }
+  });
+
+  grid.innerHTML = CHAPTERS.map(ch => {
+    const name = lang === 'te' ? ch.te : ch.en;
+    const verseLabel = lang === 'te' ? 'శ్లోకాలు' : 'verses';
+
+    const verses = [];
+    for (let v = 1; v <= ch.verses; v++) {
+      const blogId = blogMap[`${ch.chapter}-${v}`];
+      if (blogId) {
+        // Highlighted active button
+        verses.push(`<button class="verse-btn" style="background: var(--primary); color: var(--bg-dark); font-weight: bold;" onclick="window.__showBlogDetail(${blogId})" title="Read Blog">${v}</button>`);
+      } else {
+        // Disabled empty button
+        verses.push(`<button class="verse-btn" style="opacity: 0.3; cursor: not-allowed;" disabled>${v}</button>`);
+      }
+    }
+
+    return `
+      <div class="chapter-block">
+        <div class="chapter-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+          <h3>${lang === 'te' ? 'అధ్యాయం' : 'Chapter'} ${ch.chapter} — ${name}</h3>
+          <span class="verse-count">${ch.verses} ${verseLabel}</span>
+        </div>
+        <div class="verse-grid">${verses.join('')}</div>
+      </div>
+    `;
+  }).join('');
+}
+
 function renderBlogList(blogs) {
   const grid = document.getElementById('blog-grid');
   const lang = getLang();
@@ -44,15 +119,12 @@ function renderBlogList(blogs) {
   let html = '';
   let currentChapter = -1;
 
-  const chapterTitlesEn = ["Arjuna Visada Yoga", "Sankhya Yoga", "Karma Yoga", "Jnana Karma Sanyasa Yoga", "Karma Sanyasa Yoga", "Dhyana Yoga", "Jnana Vijnana Yoga", "Akshara Brahma Yoga", "Raja Vidya Raja Guhya Yoga", "Vibhuti Yoga", "Viswarupa Darshana Yoga", "Bhakti Yoga", "Kshetra Kshetrajna Vibhaga Yoga", "Gunatraya Vibhaga Yoga", "Purushottama Yoga", "Daivasura Sampad Vibhaga Yoga", "Shraddhatraya Vibhaga Yoga", "Moksha Sanyasa Yoga"];
-  const chapterTitlesTe = ["అర్జున విషాద యోగము", "సాంఖ్య యోగము", "కర్మ యోగము", "జ్ఞాన కర్మ సన్యాస యోగము", "కర్మ సన్యాస యోగము", "ధ్యాన యోగము", "జ్ఞాన విజ్ఞాన యోగము", "అక్షర బ్రహ్మ యోగము", "రాజ విద్యా రాజ గుహ్య యోగము", "విభూతి యోగము", "విశ్వరూప దర్శన యోగము", "భక్తి యోగము", "క్షేత్ర క్షేత్రజ్ఞ విభాగ యోగము", "గుణత్రయ విభాగ యోగము", "పురుషోత్తమ యోగము", "దైవాసుర సంపద్ విభాగ యోగము", "శ్రద్ధాత్రయ విభాగ యోగము", "మోక్ష సన్యాస యోగము"];
-
   blogs.forEach(blog => {
-    // Add chapter divider if chapter changes (and if blog has chapter info)
     if (blog.chapter && blog.chapter !== currentChapter) {
       currentChapter = blog.chapter;
-      const chNameEn = `Chapter ${currentChapter} — ${chapterTitlesEn[currentChapter - 1]}`;
-      const chNameTe = `అధ్యాయం ${currentChapter} — ${chapterTitlesTe[currentChapter - 1]}`;
+      const chInfo = CHAPTERS[currentChapter - 1];
+      const chNameEn = `Chapter ${currentChapter} — ${chInfo.en}`;
+      const chNameTe = `అధ్యాయం ${currentChapter} — ${chInfo.te}`;
       const chName = lang === 'te' ? chNameTe : chNameEn;
       
       html += `
@@ -129,10 +201,27 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
+// View Toggle
+document.querySelectorAll('.view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.view-btn').forEach(b => {
+      b.classList.remove('active');
+      b.style.background = 'transparent';
+    });
+    btn.classList.add('active');
+    btn.style.background = 'var(--primary)';
+    
+    currentViewMode = btn.dataset.view;
+    if (allBlogs.length > 0) {
+      renderViews(allBlogs);
+    }
+  });
+});
+
 // Language change
 window.addEventListener('langchange', () => {
   if (allBlogs.length > 0) {
-    renderBlogList(allBlogs);
+    renderViews(allBlogs);
   }
 });
 

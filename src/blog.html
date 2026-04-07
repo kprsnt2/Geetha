@@ -96,13 +96,21 @@
         <p class="page-subtitle" data-en="Life lessons from the Bhagavad Gita, written for the modern soul" data-te="భగవద్గీత నుండి ఆధునిక ఆత్మ కోసం రాసిన జీవిత పాఠాలు">Life lessons from the Bhagavad Gita, written for the modern soul</p>
       </header>
 
-      <div class="blog-filters" role="tablist" aria-label="Blog filters">
-        <button class="filter-btn active" data-filter="all" data-en="All Posts" data-te="అన్ని" role="tab" aria-selected="true">All Posts</button>
-        <button class="filter-btn" data-filter="ai" data-en="AI Insights" data-te="AI అంతర్దృష్టులు" role="tab" aria-selected="false">AI Insights</button>
-        <button class="filter-btn" data-filter="personal" data-en="Life Notes" data-te="జీవిత గమనికలు" role="tab" aria-selected="false">Life Notes</button>
+      <div class="blog-filters-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <div class="blog-filters" role="tablist" aria-label="Blog filters">
+          <button class="filter-btn active" data-filter="all" data-en="All Posts" data-te="అన్ని" role="tab" aria-selected="true">All Posts</button>
+          <button class="filter-btn" data-filter="ai" data-en="AI Insights" data-te="AI అంతర్దృష్టులు" role="tab" aria-selected="false">AI Insights</button>
+          <button class="filter-btn" data-filter="personal" data-en="Life Notes" data-te="జీవిత గమనికలు" role="tab" aria-selected="false">Life Notes</button>
+        </div>
+        <div class="view-toggle" id="view-toggle" style="display: flex; background: var(--bg-glass); border-radius: 20px; padding: 4px;">
+          <button class="view-btn active" data-view="grid" title="Grid View" style="background: var(--primary); padding: 4px 12px; border-radius: 16px; border: none; cursor: pointer;">🔲</button>
+          <button class="view-btn" data-view="list" title="List View" style="background: transparent; padding: 4px 12px; border-radius: 16px; border: none; cursor: pointer;">📝</button>
+        </div>
       </div>
 
-      <div class="blog-grid stagger" id="blog-grid" role="feed" aria-label="Blog posts">
+      <div class="archive-grid stagger" id="blog-grid-view" role="list"></div>
+
+      <div class="blog-grid stagger" id="blog-grid" role="feed" aria-label="Blog posts" style="display: none;">
         <div class="loading" id="blog-loading">
           <div class="loading-spinner"></div>
           <span class="loading-text" data-en="Loading blog posts..." data-te="బ్లాగ్ పోస్టులు లోడ్ అవుతున్నాయి...">Loading blog posts...</span>

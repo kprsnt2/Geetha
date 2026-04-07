@@ -1,7 +1,7 @@
 /**
  * Blog page — listing and detail views
  */
-import { initLanguage, initStars, initMobileNav, apiFetch, getLang, formatDate } from './utils.js';
+import { initLanguage, initStars, initMobileNav, apiFetch, getLang, formatDate, initChatWidget } from './utils.js';
 
 let currentFilter = 'all';
 let allBlogs = [];
@@ -181,6 +181,36 @@ window.__showBlogDetail = function(blogId) {
   const fixedContent = content.replace(/\\n/g, '\n');
   contentEl.innerHTML = fixedContent.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
 
+  // Attach Speech Synthesis button
+  let speechBtn = document.getElementById('audio-blog-btn');
+  if (!speechBtn) {
+    speechBtn = document.createElement('button');
+    speechBtn.id = 'audio-blog-btn';
+    speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+    speechBtn.style.cssText = 'background: var(--bg-glass); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 20px; padding: 4px 12px; cursor: pointer; float: right; margin-bottom: 1rem;';
+    contentEl.parentElement.insertBefore(speechBtn, contentEl);
+  }
+  
+  speechBtn.onclick = () => {
+    if (!('speechSynthesis' in window)) return alert('Voice not supported in this browser.');
+    
+    if (speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+      speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+      return;
+    }
+    
+    const utter = new SpeechSynthesisUtterance(fixedContent.replace(/<br>/g, ' '));
+    utter.lang = lang === 'te' ? 'te-IN' : 'en-US';
+    utter.rate = 0.9;
+    
+    speechBtn.innerHTML = '⏹ <span style="font-size:0.8rem">Stop Reading</span>';
+    utter.onend = () => {
+      speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+    };
+    speechSynthesis.speak(utter);
+  };
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
@@ -226,6 +256,7 @@ window.addEventListener('langchange', () => {
 });
 
 // Init
+initChatWidget();
 initLanguage();
 initStars();
 initMobileNav();

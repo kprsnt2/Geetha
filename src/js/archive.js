@@ -49,7 +49,7 @@ function renderArchive() {
       const isCompleted = dayCounter < todayDay;
       const isToday = dayCounter === todayDay;
       const cls = isToday ? 'today' : isCompleted ? 'completed' : '';
-      verses.push(`<button class="verse-btn ${cls}" onclick="window.location.href='/?ch=${ch.chapter}&v=${v}'" title="Chapter ${ch.chapter}, Verse ${v}">${v}</button>`);
+      verses.push(`<a href="/?ch=${ch.chapter}&v=${v}" class="verse-btn ${cls}" title="Chapter ${ch.chapter}, Verse ${v}">${v}</a>`);
     }
 
     return `

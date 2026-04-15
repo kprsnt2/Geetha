@@ -14,7 +14,13 @@ Disallow: /api/shloka?
 
 Sitemap: https://geetha.kprsnt.in/sitemap.xml
 
-# AI Crawlers
+# Machine-readable site info for AI
+# LLM-info: https://geetha.kprsnt.in/llm.txt
+
+# RSS/Atom Feed
+# Feed: https://geetha.kprsnt.in/feed.xml
+
+# AI Crawlers — All allowed
 User-agent: GPTBot
 Allow: /
 
@@ -30,8 +36,17 @@ Allow: /
 User-agent: anthropic-ai
 Allow: /
 
+User-agent: ClaudeBot
+Allow: /
+
 User-agent: PerplexityBot
 Allow: /
 
 User-agent: Bytespider
+Allow: /
+
+User-agent: Gemini
+Allow: /
+
+User-agent: meta-externalagent
 Allow: /

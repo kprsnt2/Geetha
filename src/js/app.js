@@ -26,6 +26,8 @@ const CHAPTER_NAMES = {
 };
 
 let currentData = null;
+let previousChapter = null;
+let previousBlogId = null;
 
 async function loadDailyShloka() {
   const saved = localStorage.getItem('geetha-progress');
@@ -54,6 +56,12 @@ function renderShloka(data) {
     `;
     return;
   }
+
+  // Detect chapter change and show banner
+  if (previousChapter !== null && shloka.chapter !== previousChapter) {
+    showNewChapterBanner(shloka.chapter, lang);
+  }
+  previousChapter = shloka.chapter;
 
   // Hide loading, show content
   document.getElementById('loading').style.display = 'none';
@@ -150,8 +158,16 @@ function renderShloka(data) {
   if (blog) {
     lessonSection.style.display = 'block';
     updateLesson(blog, lang);
+
+    // Detect new blog and show indicator
+    const blogKey = blog.id || blog.title_en || `${shloka.chapter}-${shloka.verse}`;
+    if (previousBlogId !== null && blogKey !== previousBlogId) {
+      showNewBlogIndicator(lang);
+    }
+    previousBlogId = blogKey;
   } else {
     lessonSection.style.display = 'none';
+    previousBlogId = null;
   }
 }
 
@@ -252,6 +268,234 @@ document.getElementById('btn-next')?.addEventListener('click', () => {
   }
   loadSpecificShloka(ch, v);
 });
+
+// ═══════════════════════════════════════════
+// NEW CHAPTER BANNER
+// ═══════════════════════════════════════════
+function showNewChapterBanner(chapter, lang) {
+  // Remove any existing banner
+  const existing = document.getElementById('new-chapter-banner');
+  if (existing) existing.remove();
+
+  const chName = CHAPTER_NAMES[chapter] || { en: '', te: '' };
+  const titleText = lang === 'te'
+    ? `✦ క్రొత్త అధ్యాయం — అధ్యాయం ${chapter}`
+    : `✦ New Chapter — Chapter ${chapter}`;
+  const subtitleText = lang === 'te' ? chName.te : chName.en;
+
+  const banner = document.createElement('div');
+  banner.id = 'new-chapter-banner';
+  banner.innerHTML = `
+    <div class="ncb-glow"></div>
+    <div class="ncb-content">
+      <div class="ncb-badge">NEW</div>
+      <div class="ncb-title">${titleText}</div>
+      <div class="ncb-subtitle">${subtitleText}</div>
+    </div>
+  `;
+
+  // Inject styles if not already present
+  if (!document.getElementById('ncb-styles')) {
+    const style = document.createElement('style');
+    style.id = 'ncb-styles';
+    style.textContent = `
+      #new-chapter-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        animation: ncbFadeIn 0.4s ease-out forwards, ncbFadeOut 0.5s ease-in 2.8s forwards;
+      }
+      .ncb-glow {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(ellipse at center, rgba(212, 168, 67, 0.12) 0%, transparent 70%);
+        animation: ncbGlowPulse 1.5s ease-in-out;
+      }
+      .ncb-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 28px 48px;
+        background: linear-gradient(145deg, rgba(20, 20, 50, 0.95) 0%, rgba(10, 10, 30, 0.97) 100%);
+        border: 1px solid rgba(212, 168, 67, 0.4);
+        border-radius: 20px;
+        backdrop-filter: blur(24px);
+        box-shadow: 0 0 60px rgba(212, 168, 67, 0.15), 0 20px 60px rgba(0, 0, 0, 0.5);
+        animation: ncbSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        transform: translateY(30px);
+      }
+      .ncb-badge {
+        display: inline-block;
+        padding: 3px 14px;
+        background: linear-gradient(135deg, #ff6b35, #ff8f62);
+        color: #0a0a1a;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+        border-radius: 9999px;
+        text-transform: uppercase;
+        animation: ncbBadgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+      }
+      .ncb-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #f0d080;
+        text-align: center;
+        text-shadow: 0 0 20px rgba(212, 168, 67, 0.3);
+      }
+      .ncb-subtitle {
+        font-family: 'Outfit', 'Noto Sans Telugu', sans-serif;
+        font-size: 1rem;
+        color: #a29bfe;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      @keyframes ncbFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes ncbFadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+      @keyframes ncbSlideUp {
+        from { transform: translateY(30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes ncbGlowPulse {
+        0% { opacity: 0; }
+        50% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      @keyframes ncbBadgePop {
+        from { transform: scale(0); }
+        to { transform: scale(1); }
+      }
+      @media (max-width: 480px) {
+        .ncb-content { padding: 20px 28px; }
+        .ncb-title { font-size: 1.15rem; }
+        .ncb-subtitle { font-size: 0.85rem; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(banner);
+
+  // Auto-remove after animation completes
+  setTimeout(() => {
+    banner.remove();
+  }, 3500);
+}
+
+// ═══════════════════════════════════════════
+// NEW BLOG / LIFE LESSON INDICATOR
+// ═══════════════════════════════════════════
+function showNewBlogIndicator(lang) {
+  // Remove any existing indicator
+  const existing = document.getElementById('new-blog-indicator');
+  if (existing) existing.remove();
+
+  const pill = document.createElement('div');
+  pill.id = 'new-blog-indicator';
+  pill.innerHTML = lang === 'te'
+    ? '📖 క్రొత్త కథ — చదవడానికి క్లిక్ చేయండి ↓'
+    : '📖 New Story Below — Tap to read ↓';
+  pill.title = 'Scroll to life lesson';
+
+  pill.addEventListener('click', () => {
+    const lesson = document.getElementById('lesson-section');
+    if (lesson) {
+      lesson.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Flash highlight the lesson card
+      const card = lesson.querySelector('.lesson-card');
+      if (card) {
+        card.style.transition = 'box-shadow 0.4s ease, border-color 0.4s ease';
+        card.style.boxShadow = '0 0 30px rgba(255, 107, 53, 0.3)';
+        card.style.borderColor = 'rgba(255, 107, 53, 0.5)';
+        setTimeout(() => {
+          card.style.boxShadow = '';
+          card.style.borderColor = '';
+        }, 2000);
+      }
+    }
+    pill.remove();
+  });
+
+  // Inject styles if not already present
+  if (!document.getElementById('nbi-styles')) {
+    const style = document.createElement('style');
+    style.id = 'nbi-styles';
+    style.textContent = `
+      #new-blog-indicator {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        padding: 10px 24px;
+        background: linear-gradient(135deg, rgba(20, 20, 50, 0.95), rgba(10, 10, 30, 0.97));
+        border: 1px solid rgba(255, 107, 53, 0.5);
+        border-radius: 9999px;
+        color: #ff8f62;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        pointer-events: auto;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 0 24px rgba(255, 107, 53, 0.15), 0 8px 24px rgba(0, 0, 0, 0.4);
+        animation: nbiFadeSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                   nbiBounce 2s ease-in-out 0.6s infinite,
+                   nbiFadeOut 0.4s ease-in 7.5s forwards;
+        white-space: nowrap;
+      }
+      #new-blog-indicator:hover {
+        border-color: rgba(255, 107, 53, 0.8);
+        box-shadow: 0 0 36px rgba(255, 107, 53, 0.25), 0 8px 24px rgba(0, 0, 0, 0.5);
+        color: #ffb088;
+      }
+      @keyframes nbiFadeSlideUp {
+        from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+      }
+      @keyframes nbiBounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-6px); }
+      }
+      @keyframes nbiFadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; pointer-events: none; }
+      }
+      @media (max-width: 480px) {
+        #new-blog-indicator {
+          font-size: 0.8rem;
+          padding: 8px 18px;
+          bottom: 20px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(pill);
+
+  // Auto-remove after 8 seconds
+  setTimeout(() => {
+    if (pill.parentElement) pill.remove();
+  }, 8000);
+}
 
 async function loadSpecificShloka(chapter, verse) {
   try {

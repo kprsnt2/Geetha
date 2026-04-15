@@ -31,8 +31,25 @@ app.get('/api/daily', (req, res) => {
   if (!db) return res.status(503).json({ error: 'Database not available' });
 
   try {
-    const today = getTodayShloka();
-    const shlokaId = `BG${today.chapter}.${today.verse}`;
+    let chapter, verse, dayNumber;
+
+    // Use query params if provided (for navigation), otherwise use today's shloka
+    if (req.query.ch && req.query.v) {
+      chapter = parseInt(req.query.ch);
+      verse = parseInt(req.query.v);
+      // Calculate approximate day number
+      const verseCounts = [0, 47, 72, 43, 42, 29, 47, 30, 28, 34, 42, 55, 20, 35, 27, 20, 24, 28, 78];
+      dayNumber = 0;
+      for (let i = 1; i < chapter; i++) dayNumber += verseCounts[i];
+      dayNumber += verse;
+    } else {
+      const today = getTodayShloka();
+      chapter = today.chapter;
+      verse = today.verse;
+      dayNumber = today.dayNumber;
+    }
+
+    const shlokaId = `BG${chapter}.${verse}`;
 
     const shloka = db.prepare('SELECT * FROM shlokas WHERE id = ?').get(shlokaId);
     const blog = db.prepare(
@@ -42,7 +59,7 @@ app.get('/api/daily', (req, res) => {
     if (blog && blog.tags) blog.tags = JSON.parse(blog.tags);
 
     res.json({
-      dayNumber: today.dayNumber,
+      dayNumber: dayNumber,
       totalVerses: 700,
       startDate: '2026-04-05',
       shloka: shloka || null,

@@ -112,8 +112,8 @@ function run() {
       <p itemprop="description">${escapeHtml(shloka.english_translation)}</p>
 
       ${shloka.telugu_translation ? `
-      <h4>Telugu Translation (తెలుగు అనువాదం)</h4>
-      <p lang="te">${escapeHtml(shloka.telugu_translation)}</p>
+      <h4>Telugu Translation (తెలుగు అనువాదం/తాత్పర్యం)</h4>
+      <p lang="te"><strong>భగవద్గీత తెలుగు అనువాదం:</strong> ${escapeHtml(shloka.telugu_translation)}</p>
       ` : ''}
 
       <footer>
@@ -182,7 +182,7 @@ function run() {
           ${blog.title_te ? `<h4 lang="te">${escapeHtml(blog.title_te)}</h4>` : ''}
           <time itemprop="datePublished" datetime="${blog.created_at}">${date}</time>
           <p itemprop="description">${escapeHtml(blog.excerpt_en || (blog.content_en || '').substring(0, 300))}</p>
-          ${blog.excerpt_te ? `<p lang="te">${escapeHtml(blog.excerpt_te)}</p>` : ''}
+          ${blog.excerpt_te ? `<p lang="te"><strong>Telugu Summary (తెలుగు సారాంశం):</strong> ${escapeHtml(blog.excerpt_te)}</p>` : ''}
           ${blog.shloka_id ? `<p>Based on ${blog.shloka_id.replace('BG', 'Bhagavad Gita ')}</p>` : ''}
         </li>`;
     });

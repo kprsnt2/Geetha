@@ -15,7 +15,7 @@ Disallow: /api/shloka?
 Sitemap: https://geetha.kprsnt.in/sitemap.xml
 
 # Machine-readable site info for AI
-# LLM-info: https://geetha.kprsnt.in/llm.txt
+# LLM-info: https://geetha.kprsnt.in/llms.txt
 
 # RSS/Atom Feed
 # Feed: https://geetha.kprsnt.in/feed.xml

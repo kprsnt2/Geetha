@@ -12,7 +12,9 @@ Geetha is a free, deeply optimized bilingual platform to read the Bhagavad Gita 
 
 ## Pages & API
 - Home / Daily Shloka (నేటి శ్లోకము): https://geetha.kprsnt.in/
+- Specific Chapter & Verse: https://geetha.kprsnt.in/?ch={chapter}&v={verse} (e.g. Chapter 2 Verse 47 is https://geetha.kprsnt.in/?ch=2&v=47)
 - Spiritual Blog (ఆధ్యాత్మిక బ్లాగ్): https://geetha.kprsnt.in/blog
+- Specific Blog Post / Story: https://geetha.kprsnt.in/blog?id={blogId} (e.g. https://geetha.kprsnt.in/blog?id=5)
 - Verse Archive (పూర్వ శ్లోకాలు): https://geetha.kprsnt.in/archive
 - Ask AI (సలహా): https://geetha.kprsnt.in/chat
 

@@ -26,6 +26,13 @@ async function loadBlogs(filter = 'all') {
 
     empty.style.display = 'none';
     renderViews(allBlogs);
+
+    // Initial check for deep-linked blog post ID in URL query params
+    const urlParams = new URLSearchParams(window.location.search);
+    const blogId = parseInt(urlParams.get('id'));
+    if (!isNaN(blogId)) {
+      window.__showBlogDetail(blogId, false);
+    }
   } catch (err) {
     console.error('Failed to load blogs:', err);
     if (loading) loading.innerHTML = `
@@ -158,7 +165,30 @@ function renderBlogList(blogs) {
 }
 
 // Show blog detail
-window.__showBlogDetail = function(blogId) {
+function showBlogList(updateHistory = true) {
+  // Cancel speech synthesis if active
+  if ('speechSynthesis' in window && speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+    const speechBtn = document.getElementById('audio-blog-btn');
+    if (speechBtn) speechBtn.innerHTML = '🗣️ <span style="font-size:0.8rem">Read Aloud</span>';
+  }
+
+  document.getElementById('blog-detail-view').style.display = 'none';
+  document.getElementById('blog-list-view').style.display = 'block';
+
+  // Restore document title
+  const lang = getLang();
+  const title = lang === 'te'
+    ? 'ఆధ్యాత్మిక బ్లాగ్ | Geetha'
+    : 'Spiritual Blog — Bhagavad Gita Life Lessons | Geetha';
+  document.title = title;
+
+  if (updateHistory) {
+    history.pushState({}, '', window.location.pathname);
+  }
+}
+
+window.__showBlogDetail = function(blogId, updateHistory = true) {
   const blog = allBlogs.find(b => b.id === blogId);
   if (!blog) return;
 
@@ -169,6 +199,10 @@ window.__showBlogDetail = function(blogId) {
   const title = lang === 'te' && blog.title_te ? blog.title_te : blog.title_en;
   const content = lang === 'te' && blog.content_te ? blog.content_te : blog.content_en;
   const date = formatDate(blog.created_at, lang);
+
+  // Update dynamic document title client-side for detail page
+  const pageTitle = `${title} | Geetha Blog`;
+  document.title = pageTitle;
 
   document.getElementById('blog-detail-title').textContent = title;
   document.getElementById('blog-detail-meta').innerHTML = `
@@ -229,14 +263,20 @@ window.__showBlogDetail = function(blogId) {
     speechSynthesis.speak(utter);
   };
 
+  if (updateHistory) {
+    const queryStr = `?id=${blogId}`;
+    if (window.location.search !== queryStr) {
+      history.pushState({ blogId }, '', queryStr);
+    }
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 // Back button
 document.getElementById('blog-back')?.addEventListener('click', (e) => {
   e.preventDefault();
-  document.getElementById('blog-detail-view').style.display = 'none';
-  document.getElementById('blog-list-view').style.display = 'block';
+  showBlogList(true);
 });
 
 // Filters
@@ -270,6 +310,28 @@ document.querySelectorAll('.view-btn').forEach(btn => {
 window.addEventListener('langchange', () => {
   if (allBlogs.length > 0) {
     renderViews(allBlogs);
+
+    // If viewing blog detail, update detail render language
+    const urlParams = new URLSearchParams(window.location.search);
+    const blogId = parseInt(urlParams.get('id'));
+    if (!isNaN(blogId)) {
+      window.__showBlogDetail(blogId, false);
+    }
+  }
+});
+
+// Listen to popstate event for browser navigation (back/forward)
+window.addEventListener('popstate', (e) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const blogId = parseInt(urlParams.get('id'));
+  if (!isNaN(blogId)) {
+    if (allBlogs.length > 0) {
+      window.__showBlogDetail(blogId, false);
+    } else {
+      loadBlogs(); // Load blogs will trigger deep-link display automatically
+    }
+  } else {
+    showBlogList(false);
   }
 });
 

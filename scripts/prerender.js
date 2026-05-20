@@ -227,20 +227,85 @@ function run() {
   console.log(`  ✅ archive.html — injected 18 chapter listings`);
 
   // ─────────────────────────────────────────────
-  // 4. Update sitemap with lastmod
+  // 4. Generate dynamic sitemap.xml
   // ─────────────────────────────────────────────
-  const sitemapPath = path.join(DIST, 'sitemap.xml');
-  if (fs.existsSync(sitemapPath)) {
-    let sitemap = fs.readFileSync(sitemapPath, 'utf-8');
-    const today = new Date().toISOString().split('T')[0];
-    // Add lastmod after each <priority> tag
-    sitemap = sitemap.replace(/<\/priority>/g, `</priority>\n    <lastmod>${today}</lastmod>`);
-    fs.writeFileSync(sitemapPath, sitemap, 'utf-8');
-    console.log(`  ✅ sitemap.xml — added lastmod ${today}`);
-  }
+  const today = new Date().toISOString().split('T')[0];
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Core Pages -->
+  <url>
+    <loc>https://geetha.kprsnt.in/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://geetha.kprsnt.in/blog</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://geetha.kprsnt.in/archive</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://geetha.kprsnt.in/chat</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+`;
+
+  // All 700 verses
+  const shlokas = db.prepare('SELECT chapter, verse FROM shlokas ORDER BY chapter, verse').all();
+  shlokas.forEach(s => {
+    xml += `  <url>
+    <loc>https://geetha.kprsnt.in/?ch=${s.chapter}&amp;v=${s.verse}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>\n`;
+  });
+
+  // All published blogs
+  const allBlogs = db.prepare('SELECT id FROM blogs').all();
+  allBlogs.forEach(b => {
+    xml += `  <url>
+    <loc>https://geetha.kprsnt.in/blog?id=${b.id}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>\n`;
+  });
+
+  xml += `</urlset>`;
+  fs.writeFileSync(path.join(DIST, 'sitemap.xml'), xml, 'utf-8');
+  console.log(`  ✅ sitemap.xml — dynamically generated with ${shlokas.length + allBlogs.length + 4} URLs`);
 
   db.close();
-  console.log('🎉 Pre-rendering complete!');
+
+  // ─────────────────────────────────────────────
+  // 5. Rename built html files to templates
+  // ─────────────────────────────────────────────
+  const indexPath = path.join(DIST, 'index.html');
+  const indexTemplatePath = path.join(DIST, 'index-template.html');
+  if (fs.existsSync(indexPath)) {
+    fs.renameSync(indexPath, indexTemplatePath);
+    console.log('  ✅ index.html renamed to index-template.html');
+  }
+
+  const blogPath = path.join(DIST, 'blog.html');
+  const blogTemplatePath = path.join(DIST, 'blog-template.html');
+  if (fs.existsSync(blogPath)) {
+    fs.renameSync(blogPath, blogTemplatePath);
+    console.log('  ✅ blog.html renamed to blog-template.html');
+  }
+
+  console.log('🎉 Pre-rendering and template preparation complete!');
 }
 
 run();

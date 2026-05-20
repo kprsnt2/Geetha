@@ -35,12 +35,26 @@ async function loadDailyShloka() {
     try {
       const { ch, v } = JSON.parse(saved);
       if (ch && v) {
-        return loadSpecificShloka(ch, v);
+        return loadSpecificShloka(ch, v, false);
       }
     } catch(e) {}
   }
-  // Default for fresh users: Chapter 1, Verse 1
-  return loadSpecificShloka(1, 1);
+  // Default for fresh users: Today's active daily shloka
+  try {
+    const data = await apiFetch('daily');
+    if (data && data.shloka) {
+      currentData = data;
+      renderShloka(currentData);
+      const s = data.shloka;
+      // Keep homepage URL clean as '/' but store state for popstate tracking
+      history.replaceState({ ch: s.chapter, v: s.verse }, '', window.location.pathname + window.location.search);
+    } else {
+      loadSpecificShloka(1, 1, false);
+    }
+  } catch (err) {
+    console.error('Failed to load daily shloka:', err);
+    loadSpecificShloka(1, 1, false);
+  }
 }
 
 function renderShloka(data) {
@@ -63,6 +77,23 @@ function renderShloka(data) {
   }
   previousChapter = shloka.chapter;
 
+  // Update dynamic document title client-side
+  const urlParams = new URLSearchParams(window.location.search);
+  const hasParams = urlParams.has('ch') || urlParams.has('chapter');
+  const chName = CHAPTER_NAMES[shloka.chapter] || { en: '', te: '' };
+  
+  let pageTitle;
+  if (hasParams) {
+    pageTitle = lang === 'te'
+      ? `భగవద్గీత ${shloka.chapter}.${shloka.verse} — ${chName.te} | గీత`
+      : `Bhagavad Gita ${shloka.chapter}.${shloka.verse} — ${chName.en} | Geetha`;
+  } else {
+    pageTitle = lang === 'te'
+      ? `గీత | Geetha — రోజువారీ భగవద్గీత శ్లోకం`
+      : `గీత | Geetha — Daily Bhagavad Gita Shloka in Telugu & English`;
+  }
+  document.title = pageTitle;
+
   // Hide loading, show content
   document.getElementById('loading').style.display = 'none';
   document.getElementById('shloka-content').style.display = 'block';
@@ -71,7 +102,6 @@ function renderShloka(data) {
   document.getElementById('day-number').textContent = dayNumber;
 
   // Chapter info
-  const chName = CHAPTER_NAMES[shloka.chapter] || { en: '', te: '' };
   const chapterEl = document.getElementById('chapter-info');
   chapterEl.setAttribute('data-en', `Chapter ${shloka.chapter} — ${chName.en}`);
   chapterEl.setAttribute('data-te', `అధ్యాయం ${shloka.chapter} — ${chName.te}`);
@@ -497,7 +527,7 @@ function showNewBlogIndicator(lang) {
   }, 8000);
 }
 
-async function loadSpecificShloka(chapter, verse) {
+async function loadSpecificShloka(chapter, verse, updateHistory = true) {
   try {
     const data = await apiFetch(`daily?ch=${chapter}&v=${verse}`);
     if (data.shloka) {
@@ -507,6 +537,13 @@ async function loadSpecificShloka(chapter, verse) {
       currentData = data;
       renderShloka(currentData);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (updateHistory) {
+        const queryStr = `?ch=${chapter}&v=${verse}`;
+        if (window.location.search !== queryStr) {
+          history.pushState({ ch: chapter, v: verse }, '', queryStr);
+        }
+      }
     }
   } catch (err) {
     console.error('Failed to load shloka:', err);
@@ -528,13 +565,37 @@ initLanguage();
 initStars();
 initMobileNav();
 
+// Listen to popstate event for browser navigation (back/forward)
+window.addEventListener('popstate', (e) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const ch = parseInt(urlParams.get('ch'));
+  const v = parseInt(urlParams.get('v'));
+  
+  if (ch && v) {
+    loadSpecificShloka(ch, v, false);
+  } else {
+    // Try to load state from event or saved progress or fallback to daily
+    const saved = localStorage.getItem('geetha-progress');
+    if (saved) {
+      try {
+        const { ch: sCh, v: sV } = JSON.parse(saved);
+        if (sCh && sV) {
+          loadSpecificShloka(sCh, sV, false);
+          return;
+        }
+      } catch (err) {}
+    }
+    loadDailyShloka();
+  }
+});
+
 // Check for query params from archive page
 const urlParams = new URLSearchParams(window.location.search);
 const qChapter = urlParams.get('ch');
 const qVerse = urlParams.get('v');
 
 if (qChapter && qVerse) {
-  loadSpecificShloka(parseInt(qChapter), parseInt(qVerse));
+  loadSpecificShloka(parseInt(qChapter), parseInt(qVerse), false);
 } else {
   loadDailyShloka();
 }

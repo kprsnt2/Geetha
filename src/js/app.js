@@ -39,22 +39,8 @@ async function loadDailyShloka() {
       }
     } catch(e) {}
   }
-  // Default for fresh users: Today's active daily shloka
-  try {
-    const data = await apiFetch('daily');
-    if (data && data.shloka) {
-      currentData = data;
-      renderShloka(currentData);
-      const s = data.shloka;
-      // Keep homepage URL clean as '/' but store state for popstate tracking
-      history.replaceState({ ch: s.chapter, v: s.verse }, '', window.location.pathname + window.location.search);
-    } else {
-      loadSpecificShloka(1, 1, false);
-    }
-  } catch (err) {
-    console.error('Failed to load daily shloka:', err);
-    loadSpecificShloka(1, 1, false);
-  }
+  // Default for fresh users: Start from Chapter 1, Verse 1
+  return loadSpecificShloka(1, 1, false);
 }
 
 function renderShloka(data) {
